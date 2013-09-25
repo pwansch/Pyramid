@@ -7,12 +7,29 @@
 //
 
 #import "AppDelegate.h"
+#import "MainViewController.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+	NSString *versionValue = [[NSUserDefaults standardUserDefaults] stringForKey:kVersionKey];
+	if (versionValue == nil)
+	{
+		NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
+									 @"1.1",  kVersionKey,
+									 @"YES", kSoundKey,
+                                     @"YES", kTimerKey,
+                                     @"-28", kCasinoScoreKey,
+                                     @"YES", kTurnOverDeckKey,
+                                     @"NO", kOneKey,
+                                     @"0", kCardBackKey,
+                                     nil];
+		[[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
+		[[NSUserDefaults standardUserDefaults] synchronize];
+	}
+    
     return YES;
 }
 							
