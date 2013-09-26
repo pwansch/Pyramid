@@ -13,8 +13,10 @@
 @property (assign, nonatomic) unsigned short cardValue;
 @property (assign, nonatomic) unsigned short cardBack;
 @property (assign, nonatomic) BOOL faceDown;
+@property (assign, nonatomic) BOOL tapped;
 
 - (id)initWithFrame:(CGRect)frame :(unsigned short)cardValue :(unsigned short)cardBack :(BOOL)faceDown;
 - (void)flipCard;
+- (void)tapCard;
 
 @end

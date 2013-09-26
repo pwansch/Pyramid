@@ -8,7 +8,6 @@
 
 #import "MainViewController.h"
 #import "MainView.h"
-#import "CardView.h"
 
 @interface MainViewController ()
 
@@ -42,9 +41,9 @@
     mainView.fTimer = [defaults boolForKey:kTimerKey];
     
     // Create the card arrays
-    self.stack = [[NSMutableArray alloc] initWithCapacity:10];
-    self.stackDown = [[NSMutableArray alloc] initWithCapacity:10];
-    self.down = [[NSMutableArray alloc] initWithCapacity:10];
+    self.stack = [[NSMutableArray alloc] initWithCapacity:24];
+    self.stackDown = [[NSMutableArray alloc] initWithCapacity:52];
+    self.down = [[NSMutableArray alloc] initWithCapacity:52];
     self.cards = [[NSMutableArray alloc] initWithCapacity:28];
 
     // Initialize variables
@@ -75,7 +74,6 @@
     MainView *mainView = (MainView *)self.view;
     mainView.lCasinoScore = [defaults integerForKey:kCasinoScoreKey];
     mainView.fTimer = [defaults boolForKey:kTimerKey];
-    
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         [self dismissViewControllerAnimated:YES completion:nil];
@@ -173,6 +171,9 @@
 		} while (fPicked[sTemp]);
 		fPicked[sTemp] = YES;
         card = [[CardView alloc] initWithFrame:[mainView cardFrame:i] :sTemp :self.sCardBack :NO];
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+        tap.numberOfTapsRequired = 1;
+        [card addGestureRecognizer:tap];
         [self.cards addObject:card];
         [self.view addSubview:card];
     }
@@ -183,12 +184,32 @@
 		} while (fPicked[sTemp]);
 		fPicked[sTemp] = YES;
         card = [[CardView alloc] initWithFrame:[mainView stackFrame] :sTemp :self.sCardBack :YES];
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+        tap.numberOfTapsRequired = 1;
+        [card addGestureRecognizer:tap];
         [self.stack addObject:card];
         [self.view addSubview:card];
     }
+    self.firstCard = nil;
     
 	// Draw the view
 	[mainView setNeedsDisplay];
+}
+
+- (void)handleTap:(UIGestureRecognizer *)gestureRecognizer
+{
+    CardView *tappedCard = (CardView *)gestureRecognizer.view;
+    
+    if (self.firstCard == nil) {
+        self.firstCard = tappedCard;
+        [tappedCard tapCard];
+    } else if (self.firstCard != tappedCard) {
+        // Check if cards can be removed
+    } else {
+        // Remove first card
+        [tappedCard tapCard];
+        self.firstCard = nil;
+    }
 }
 
 - (void)updateScore:(CADisplayLink*)sender

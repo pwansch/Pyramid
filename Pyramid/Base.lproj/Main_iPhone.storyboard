@@ -8,7 +8,7 @@
         <scene sceneID="rV5-Y2-ghB">
             <objects>
                 <viewController id="rQl-PL-IFJ" customClass="MainViewController" sceneMemberID="viewController">
-                    <view key="view" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="l9E-07-oys" customClass="MainView">
+                    <view key="view" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="l9E-07-oys" customClass="MainView">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>

@@ -9,6 +9,7 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import <QuartzCore/QuartzCore.h>
 #import "FlipsideViewController.h"
+#import "CardView.h"
 
 #define kVersionKey			@"version"
 #define kSoundKey			@"sound"
@@ -23,6 +24,7 @@
 @property (strong, nonatomic) IBOutlet UIButton *gameButton;
 @property (strong, nonatomic) IBOutlet UIButton *infoButton;
 @property (strong, nonatomic) UIPopoverController *flipsidePopoverController;
+@property (strong, nonatomic) CardView *firstCard;
 @property (strong, nonatomic) CADisplayLink *gameTimer;
 @property (strong, nonatomic) NSMutableArray *stack;
 @property (strong, nonatomic) NSMutableArray *stackDown;
@@ -40,5 +42,6 @@
 - (IBAction)newGame:(id)sender;
 - (void)playSound:(SystemSoundID)soundID;
 - (void)updateScore:(CADisplayLink*)sender;
+- (void)handleTap:(UIGestureRecognizer *)gestureRecognizer;
 
 @end
