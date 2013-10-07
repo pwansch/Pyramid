@@ -126,6 +126,7 @@
         [self dismissViewControllerAnimated:YES completion:nil];
     } else {
         [self.flipsidePopoverController dismissPopoverAnimated:YES];
+        self.flipsidePopoverController = nil;
     }
 }
 
@@ -546,6 +547,7 @@
     // Dismiss popover if it is displayed
     if (self.flipsidePopoverController != nil) {
         [self.flipsidePopoverController dismissPopoverAnimated:YES];
+        self.flipsidePopoverController = nil;
     }
     
     // Change the location of the cards
