@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "MainViewController.h"
+#import "MainView.h"
 
 @implementation AppDelegate
 
@@ -18,7 +19,8 @@
 	if (versionValue == nil)
 	{
 		NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
-									 @"1.1",  kVersionKey,
+									 @"1.1", kVersionKey,
+                                     @"YES", kAnimationKey,
 									 @"YES", kSoundKey,
                                      @"YES", kTimerKey,
                                      @"-28", kCasinoScoreKey,
@@ -43,6 +45,10 @@
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    MainView *mainView = (MainView *)self.window.rootViewController.view;
+    [defaults setInteger:mainView.lCasinoScore forKey:kCasinoScoreKey];
+	[defaults synchronize];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application

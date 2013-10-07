@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4510" systemVersion="12F37" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="aVO-UE-KGo">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4510" systemVersion="12F45" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="aVO-UE-KGo">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
     </dependencies>
@@ -39,6 +39,17 @@
                                     <action selector="newGame:" destination="aVO-UE-KGo" eventType="touchUpInside" id="OTR-dm-82S"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="tC1-o9-mQI">
+                                <rect key="frame" x="88" y="978" width="90" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <state key="normal" title="Pause">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="pauseGame:" destination="aVO-UE-KGo" eventType="touchUpInside" id="1lS-Yx-O86"/>
+                                </connections>
+                            </button>
                         </subviews>
                     </view>
                     <toolbarItems/>
@@ -46,6 +57,7 @@
                     <connections>
                         <outlet property="gameButton" destination="aOm-yt-azd" id="6hh-p7-a3e"/>
                         <outlet property="infoButton" destination="K2B-x1-CWn" id="4JD-iF-ReN"/>
+                        <outlet property="pauseButton" destination="tC1-o9-mQI" id="EOH-gK-ihe"/>
                         <segue destination="FTa-do-hRx" kind="popover" identifier="showAlternate" popoverAnchorView="K2B-x1-CWn" id="pXF-iP-W5x">
                             <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
                         </segue>
@@ -63,10 +75,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <navigationBar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" id="8Bx-U8-Xwy">
+                            <navigationBar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="8Bx-U8-Xwy">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <items>
-                                    <navigationItem title="Title" id="UD1-FV-3cM">
+                                    <navigationItem title="Settings" id="UD1-FV-3cM">
                                         <barButtonItem key="leftBarButtonItem" systemItem="done" id="8zt-ik-JXd">
                                             <connections>
                                                 <action selector="done:" destination="FTa-do-hRx" id="JoJ-z8-Ud1"/>
@@ -75,9 +88,99 @@
                                     </navigationItem>
                                 </items>
                             </navigationBar>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Animation" lineBreakMode="tailTruncation" minimumFontSize="10" id="OIa-ar-SlY">
+                                <rect key="frame" x="20" y="60" width="150" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Sound Effects" lineBreakMode="tailTruncation" minimumFontSize="10" id="yq6-FJ-dvH">
+                                <rect key="frame" x="20" y="100" width="150" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="PXx-r5-Cd8">
+                                <rect key="frame" x="251" y="55" width="51" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                            </switch>
+                            <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="VIf-jk-1Vh">
+                                <rect key="frame" x="251" y="95" width="51" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                            </switch>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Turn Over Deck" lineBreakMode="tailTruncation" minimumFontSize="10" id="Jkj-lo-d0n">
+                                <rect key="frame" x="20" y="140" width="150" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="DM1-bm-eUa">
+                                <rect key="frame" x="251" y="135" width="51" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                            </switch>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Timer" lineBreakMode="tailTruncation" minimumFontSize="10" id="gE2-h4-2cd">
+                                <rect key="frame" x="20" y="180" width="150" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="Yt4-EB-qlk">
+                                <rect key="frame" x="251" y="175" width="51" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                            </switch>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="7Qs-WS-uGZ">
+                                <rect key="frame" x="20" y="300" width="280" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Reset Casino Score">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="reset:" destination="FTa-do-hRx" eventType="touchUpInside" id="CFh-U9-UZ6"/>
+                                </connections>
+                            </button>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="zKf-HF-sBm">
+                                <rect key="frame" x="20" y="224" width="280" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="Draw One Card"/>
+                                    <segment title="Draw Three Cards"/>
+                                </segments>
+                            </segmentedControl>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="rQ3-MR-hEO">
+                                <rect key="frame" x="20" y="260" width="280" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="Regular"/>
+                                    <segment title="Flamingo"/>
+                                    <segment title="Leaf"/>
+                                </segments>
+                            </segmentedControl>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="pUI-Vd-NI7">
+                                <rect key="frame" x="20" y="347" width="280" height="485"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <string key="text">Pyramid is a challenging solitaire card game. It begins with a shuffled deck and 28 cards dealt in a pyramid shape on the screen. The rest of the cards are placed face-down in the top left corner. You may play any free card or any card that will be made free by removing the card you have just selected. Cards are removed by matching two cards whose ranks add up to 13. Kings are removed individually. Cards from the remaining deck may also be used to make a match of 13. Only the card on top of the turned-over stack may be played. You win when all the cards in the pyramid have been removed. If more than one option is available for a card, consider your choices carefully. If you can remove a card that will free up another much needed card, this is probably the better move. Match the cards in the pyramid before resorting to the deck cards. You may need those cards later when matching from the pyramid is more difficult.
+
+There are two scoring options available in Pyramid, depending on whether or not Timer is selected. If Timer is selected you start the game with $-28. For each match made you receive $13. Flipping a deck card costs $1 and flipping over the deck for reuse costs $5. Every 10 seconds of play cost you $1. Starting a new game costs you $28 plus $5 for each card left on the table. The dollar amount carries over from one game to the next and can be reset by choosing Reset Casino Score. If Timer is not selected you start the game with -28 points. For each match made you receive 13 points. Flipping a deck card costs 1 point and flipping over the deck for reuse costs 5 points. Starting a new game costs you 28 points.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                     </view>
+                    <value key="contentSizeForViewInPopover" type="size" width="320" height="852"/>
                     <splitViewMasterSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="animationSwitch" destination="PXx-r5-Cd8" id="Lte-nz-Okp"/>
+                        <outlet property="cardBackControl" destination="rQ3-MR-hEO" id="05S-hG-Pdg"/>
+                        <outlet property="oneControl" destination="zKf-HF-sBm" id="Xmq-KP-xpa"/>
+                        <outlet property="soundSwitch" destination="VIf-jk-1Vh" id="lyb-7B-tSA"/>
+                        <outlet property="timerSwitch" destination="Yt4-EB-qlk" id="BKv-OE-eF7"/>
+                        <outlet property="turnOverSwitch" destination="DM1-bm-eUa" id="Oqr-Rd-3EC"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9mE-fb-xOw" sceneMemberID="firstResponder"/>
             </objects>

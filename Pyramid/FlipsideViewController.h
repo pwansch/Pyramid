@@ -12,13 +12,20 @@
 
 @protocol FlipsideViewControllerDelegate
 - (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller;
+- (void)flipsideViewControllerResetScores;
 @end
 
 @interface FlipsideViewController : UIViewController
 
 @property (weak, nonatomic) id <FlipsideViewControllerDelegate> delegate;
+@property (strong, nonatomic) IBOutlet UISwitch *animationSwitch;
 @property (strong, nonatomic) IBOutlet UISwitch *soundSwitch;
+@property (strong, nonatomic) IBOutlet UISwitch *timerSwitch;
+@property (strong, nonatomic) IBOutlet UISwitch *turnOverSwitch;
+@property (strong, nonatomic) IBOutlet UISegmentedControl *cardBackControl;
+@property (strong, nonatomic) IBOutlet UISegmentedControl *oneControl;
 
 - (IBAction)done:(id)sender;
+- (IBAction)reset:(id)sender;
 
 @end

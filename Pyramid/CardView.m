@@ -7,6 +7,7 @@
 //
 
 #import "CardView.h"
+#import "MainView.h"
 
 @interface CardView ()
   // Class extensions and utility functions
@@ -29,7 +30,7 @@
     return returnImage;
 }
 
-- (id)initWithFrame:(CGRect)frame :(unsigned short)cardValue :(unsigned short)cardBack :(BOOL)faceDown
+- (id)initWithFrame:(CGRect)frame :(unsigned short)cardValue :(unsigned short)cardBack :(BOOL)faceDown :(CardPosition)position :(unsigned short) positionIndex
 {
     self = [super initWithFrame:frame];
     if (self) {
@@ -37,6 +38,9 @@
         self.cardValue = cardValue;
         self.cardBack = cardBack;
         self.faceDown = faceDown;
+        self.position = position;
+        self.positionIndex = positionIndex;
+        self.indent = 0;
         self.tapped = NO;
         self.image = [UIImage imageNamed:[self cardFileImageName:cardValue :cardBack :faceDown]];
         self.userInteractionEnabled = YES;
@@ -56,6 +60,14 @@
     } else {
         self.tapped = YES;
         self.image = [self convertImageToNegative:self.image];
+    }
+}
+
+- (void)setBack:(unsigned short)back
+{
+    self.cardBack = back;
+    if (self.faceDown) {
+        self.image = [UIImage imageNamed:[self cardFileImageName:self.cardValue :self.cardBack :self.faceDown]];
     }
 }
 
@@ -80,7 +92,7 @@
     }
     
     if (faceDown) {
-        index = offset + 52 + cardBack;
+        index = offset + NOCARDS + cardBack;
     } else {
         index = offset + cardValue;
     }

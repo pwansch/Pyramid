@@ -8,15 +8,26 @@
 
 #import <UIKit/UIKit.h>
 
+typedef enum _CardPosition {
+    Cards = 0,
+    Stack = 1,
+    StackDown = 2,
+    Down = 3
+} CardPosition;
+
 @interface CardView : UIImageView
 
 @property (assign, nonatomic) unsigned short cardValue;
 @property (assign, nonatomic) unsigned short cardBack;
+@property (assign, nonatomic) CardPosition position;
+@property (assign, nonatomic) unsigned short positionIndex;
+@property (assign, nonatomic) unsigned short indent;
 @property (assign, nonatomic) BOOL faceDown;
 @property (assign, nonatomic) BOOL tapped;
 
-- (id)initWithFrame:(CGRect)frame :(unsigned short)cardValue :(unsigned short)cardBack :(BOOL)faceDown;
+- (id)initWithFrame:(CGRect)frame :(unsigned short)cardValue :(unsigned short)cardBack :(BOOL)faceDown :(CardPosition)position :(unsigned short) positionIndex;
 - (void)flipCard;
 - (void)tapCard;
+- (void)setBack:(unsigned short)back;
 
 @end

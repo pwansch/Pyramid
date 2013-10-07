@@ -17,8 +17,12 @@
 
 - (void)awakeFromNib
 {
-    self.preferredContentSize = CGSizeMake(320.0, 480.0);
-    [super awakeFromNib];
+    self.preferredContentSize = CGSizeMake(320.0, 568.0);
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        UIScrollView *scrollView = (UIScrollView *)self.view;
+        scrollView.contentSize = CGSizeMake(320.0, 568.0);
+        [super awakeFromNib];
+    }
 }
 
 - (void)viewDidLoad
@@ -28,7 +32,12 @@
 
 	// Load settings
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    self.animationSwitch.on = [defaults boolForKey:kAnimationKey];
 	self.soundSwitch.on = [defaults boolForKey:kSoundKey];
+	self.turnOverSwitch.on = [defaults boolForKey:kTurnOverDeckKey];
+	self.timerSwitch.on = [defaults boolForKey:kTimerKey];
+    self.cardBackControl.selectedSegmentIndex = [defaults integerForKey:kCardBackKey];
+    self.oneControl.selectedSegmentIndex = ([defaults boolForKey:kOneKey] ? 0 : 1);
 }
 
 - (void)didReceiveMemoryWarning
@@ -43,15 +52,39 @@
 {
 	// Save settings and write to disk
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:self.animationSwitch.on forKey:kAnimationKey];
 	[defaults setBool:self.soundSwitch.on forKey:kSoundKey];
+	[defaults setBool:self.turnOverSwitch.on forKey:kTurnOverDeckKey];
+	[defaults setBool:self.timerSwitch.on forKey:kTimerKey];
+    [defaults setInteger:self.cardBackControl.selectedSegmentIndex forKey:kCardBackKey];
+    [defaults setBool:(self.oneControl.selectedSegmentIndex == 0) forKey:kOneKey];
 	[defaults synchronize];
     
     [self.delegate flipsideViewControllerDidFinish:self];
 }
 
+- (IBAction)reset:(id)sender
+{
+	// Save settings and write to disk
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:self.animationSwitch.on forKey:kAnimationKey];
+	[defaults setBool:self.soundSwitch.on forKey:kSoundKey];
+	[defaults setBool:self.turnOverSwitch.on forKey:kTurnOverDeckKey];
+	[defaults setBool:self.timerSwitch.on forKey:kTimerKey];
+    [defaults setInteger:self.cardBackControl.selectedSegmentIndex forKey:kCardBackKey];
+    [defaults setBool:(self.oneControl.selectedSegmentIndex == 0) forKey:kOneKey];
+    [defaults synchronize];
+    [self.delegate flipsideViewControllerResetScores];
+}
+
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view
+    self.animationSwitch = nil;
 	self.soundSwitch = nil;
+    self.turnOverSwitch = nil;
+    self.timerSwitch = nil;
+    self.cardBackControl = nil;
+    self.oneControl = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {

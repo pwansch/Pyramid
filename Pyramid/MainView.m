@@ -12,22 +12,28 @@
 
 - (CGFloat)gapX;
 - (CGFloat)gapY;
+- (CGRect)statusBarFrameViewRect;
 
 @end
 
 @implementation MainView
+
+@synthesize text;
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
+        self.text = nil;
     }
     return self;
 }
 
 - (void)drawRect:(CGRect)rect
 {
+    CGRect rectPaint, rectIntersect;
+
 	// Obtain graphics context and set defaults
 	CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetLineWidth(context, 1.0);
@@ -41,9 +47,55 @@
     CGContextSetFillColorWithColor(context, [UIColor colorWithRed:0.0f green:0.5f blue:0.0f alpha:1.0f].CGColor);
     CGContextAddRect(context, rect);
     CGContextDrawPath(context, kCGPathFill);
+
+    // Draw empty stacks with a black stroke
+    CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
+    
+    // draw stack
+    rectPaint = [self stackFrame];
+    rectPaint.origin.x += 1;
+    rectPaint.origin.y += 1;
+    rectPaint.size.width -= 2;
+    rectPaint.size.height -= 2;
+    rectIntersect = CGRectIntersection(rectPaint, rect);
+    if (!CGRectIsNull(rectIntersect)) {
+        CGContextAddRect(context, rectPaint);
+        CGContextDrawPath(context, kCGPathStroke);
+        if (self.fTurnOverDeck) {
+            rectPaint.origin.y += (rectPaint.size.height - 2 * font.pointSize) / 2;
+            rectPaint.size.height = 2 * font.pointSize;
+            NSString *tap = [NSString stringWithFormat:@"Tap"];
+            [tap drawInRect:rectPaint withAttributes:dictionary];
+            [[UIColor blackColor] set];
+        }
+    }
+
+    // draw stack down
+    rectPaint = [self stackDownFrame];
+    rectPaint.origin.x += 1;
+    rectPaint.origin.y += 1;
+    rectPaint.size.width -= 2;
+    rectPaint.size.height -= 2;
+    rectIntersect = CGRectIntersection(rectPaint, rect);
+    if (!CGRectIsNull(rectIntersect)) {
+        CGContextAddRect(context, rectPaint);
+        CGContextDrawPath(context, kCGPathStroke);
+    }
+
+    // draw down
+    rectPaint = [self downFrame];
+    rectPaint.origin.x += 1;
+    rectPaint.origin.y += 1;
+    rectPaint.size.width -= 2;
+    rectPaint.size.height -= 2;
+    rectIntersect = CGRectIntersection(rectPaint, rect);
+    if (!CGRectIsNull(rectIntersect)) {
+        CGContextAddRect(context, rectPaint);
+        CGContextDrawPath(context, kCGPathStroke);
+    }
     
     // Draw the text
-    CGRect rectPaint = [self lineFrame:0];
+    rectPaint = [self lineFrame:0];
     if (CGRectIntersectsRect(rectPaint, rect)) {
         NSString *score = [NSString stringWithFormat:@"Score:"];
         [score drawInRect:rectPaint withAttributes:dictionary];
@@ -78,6 +130,15 @@
                 score = [NSString stringWithFormat:@"%lu:%02lu:%02lu", ulHours, ulMinutes - (ulHours * 60), self.ulTime - (ulMinutes * 60) - (ulHours * 3600)];
             }
             [score drawInRect:rectPaint withAttributes:dictionary];
+        }
+    }
+    
+    // Ausgabetext zeichnen
+    if (self.text != nil && [self.text length] > 0) {
+        rectPaint = [self textFrame];
+        if (CGRectIntersectsRect(rectPaint, rect)) {
+            [[UIColor whiteColor] set];
+            [self.text drawInRect:rectPaint withAttributes:dictionary];
         }
     }
 }
@@ -177,11 +238,37 @@
     [self setNeedsDisplayInRect:[self lineFrame:lineIndex]];
 }
 
+- (CGRect)textFrame
+{
+    CGPoint offsetPoint = [self offsetPoint];
+    CGRect statusBarFrame = [self statusBarFrameViewRect];
+    UIFont *font = [UIFont systemFontOfSize:FONT_SIZE_LINE];
+    return CGRectMake(0, statusBarFrame.size.height + (offsetPoint.y - statusBarFrame.size.height - font.pointSize) / 2, self.bounds.size.width, font.pointSize);
+}
+
+- (void)invalidateText
+{
+    [self setNeedsDisplayInRect:[self textFrame]];
+}
+
+- (CGRect)statusBarFrameViewRect
+{
+    CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
+    CGRect statusBarWindowRect = [self.window convertRect:statusBarFrame fromWindow: nil];
+    CGRect statusBarViewRect = [self convertRect:statusBarWindowRect fromView: nil];
+    return statusBarViewRect;
+}
+
 - (CGRect)stackFrame
 {
     CGSize cardSize = [self cardSize];
     CGPoint offsetPoint = [self offsetPoint];
     return CGRectMake(offsetPoint.x, offsetPoint.y, cardSize.width, cardSize.height);
+}
+
+- (void)invalidateStack
+{
+    [self setNeedsDisplayInRect:[self stackFrame]];
 }
 
 - (CGRect)stackDownFrame
@@ -212,6 +299,17 @@
 {
     CGSize boardSize = [self boardSize];
     return CGPointMake((self.bounds.size.width - boardSize.width) / 2, (self.bounds.size.height - boardSize.height) / 2);
+}
+
+- (CGFloat)indent
+{
+    CGFloat indent = 10;
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && UIInterfaceOrientationIsPortrait(orientation)) {
+        indent = 3;
+    }
+    
+    return indent;
 }
 
 @end
