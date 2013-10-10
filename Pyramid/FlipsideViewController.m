@@ -10,7 +10,7 @@
 #import "MainViewController.h"
 
 @interface FlipsideViewController ()
-
+- (IBAction)timerSwitchChanged:(id)sender;
 @end
 
 @implementation FlipsideViewController
@@ -67,12 +67,7 @@
 {
 	// Save settings and write to disk
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setBool:self.animationSwitch.on forKey:kAnimationKey];
-	[defaults setBool:self.soundSwitch.on forKey:kSoundKey];
-	[defaults setBool:self.turnOverSwitch.on forKey:kTurnOverDeckKey];
-	[defaults setBool:self.timerSwitch.on forKey:kTimerKey];
-    [defaults setInteger:self.cardBackControl.selectedSegmentIndex forKey:kCardBackKey];
-    [defaults setBool:(self.oneControl.selectedSegmentIndex == 0) forKey:kOneKey];
+    [defaults setInteger:-28 forKey:kCasinoScoreKey];
     [defaults synchronize];
     [self.delegate flipsideViewControllerResetScores];
 }
@@ -95,4 +90,7 @@
     }
 }
 
+- (IBAction)timerSwitchChanged:(id)sender {
+    [self.resetButton setEnabled:(self.timerSwitch.on ? YES : NO)];
+}
 @end

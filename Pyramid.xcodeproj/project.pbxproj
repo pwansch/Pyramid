@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AF058D611803C888006F9BEC /* undo.wav in Resources */ = {isa = PBXBuildFile; fileRef = AF058D601803C888006F9BEC /* undo.wav */; };
 		AF2DF61917F13AF800D3555D /* new.wav in Resources */ = {isa = PBXBuildFile; fileRef = AF2DF61817F13AF800D3555D /* new.wav */; };
 		AF441EEC17F28462007C905C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF441EEB17F28462007C905C /* QuartzCore.framework */; };
 		AF5415CE1800AFC4009F5E42 /* flip.wav in Resources */ = {isa = PBXBuildFile; fileRef = AF5415CD1800AFC4009F5E42 /* flip.wav */; };
@@ -158,6 +159,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AF058D601803C888006F9BEC /* undo.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = undo.wav; sourceTree = "<group>"; };
 		AF2DF61817F13AF800D3555D /* new.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = new.wav; sourceTree = "<group>"; };
 		AF441EEB17F28462007C905C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		AF5415CD1800AFC4009F5E42 /* flip.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = flip.wav; sourceTree = "<group>"; };
@@ -335,6 +337,7 @@
 		AF2DF61717F13AC900D3555D /* Sound Files */ = {
 			isa = PBXGroup;
 			children = (
+				AF058D601803C888006F9BEC /* undo.wav */,
 				AF5415CF1800BE66009F5E42 /* won.wav */,
 				AF5415CD1800AFC4009F5E42 /* flip.wav */,
 				AF673BF117FDBA7F0081B178 /* select.wav */,
@@ -726,6 +729,7 @@
 				AFE8C70B17ED2B8800A1BF04 /* InfoPlist.strings in Resources */,
 				AF7B3931180246710029E335 /* 52.BMP in Resources */,
 				AFC2E2CF17EE221D00BBAEA1 /* 100.BMP in Resources */,
+				AF058D611803C888006F9BEC /* undo.wav in Resources */,
 				AFC2E2D117EE221D00BBAEA1 /* 102.BMP in Resources */,
 				AFC2E2D317EE221D00BBAEA1 /* 104.BMP in Resources */,
 				AFC2E32617EE221E00BBAEA1 /* 40.BMP in Resources */,
@@ -862,6 +866,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -884,7 +889,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Peter Wansch (3EWEPMV8WF)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Peter Wansch (3EWEPMV8WF)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -906,6 +912,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pyramid/Pyramid-Prefix.pch";
 				INFOPLIST_FILE = "Pyramid/Pyramid-Info.plist";
@@ -920,7 +927,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Peter Wansch (3EWEPMV8WF)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pyramid/Pyramid-Prefix.pch";
 				INFOPLIST_FILE = "Pyramid/Pyramid-Info.plist";

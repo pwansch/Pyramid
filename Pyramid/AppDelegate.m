@@ -16,8 +16,7 @@
 {
     // Override point for customization after application launch.
 	NSString *versionValue = [[NSUserDefaults standardUserDefaults] stringForKey:kVersionKey];
-	if (versionValue == nil)
-	{
+	if (versionValue == nil) {
 		NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
 									 @"1.1", kVersionKey,
                                      @"YES", kAnimationKey,

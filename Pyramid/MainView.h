@@ -14,7 +14,7 @@
 #define CYCARD_IPHONE   72
 #define CXCARD_IPAD     71
 #define CYCARD_IPAD     96
-#define FONT_SIZE_LINE  12
+#define FONT_SIZE_LINE  15
 
 @interface MainView : UIView
 

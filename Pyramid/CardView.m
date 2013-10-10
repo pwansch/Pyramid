@@ -12,7 +12,7 @@
 @interface CardView ()
   // Class extensions and utility functions
   - (NSString *)cardFileImageName:(unsigned short)cardValue :(unsigned short)cardBack :(BOOL)faceDown;
-- (UIImage *)convertImageToNegative:(UIImage *)image;
+  - (UIImage *)convertImageToNegative:(UIImage *)image;
 @end
 
 @implementation CardView
@@ -30,7 +30,7 @@
     return returnImage;
 }
 
-- (id)initWithFrame:(CGRect)frame :(unsigned short)cardValue :(unsigned short)cardBack :(BOOL)faceDown :(CardPosition)position :(unsigned short) positionIndex
+- (id)initWithFrame:(CGRect)frame :(unsigned short)cardValue :(unsigned short)cardBack :(BOOL)faceDown :(CardPosition)position :(unsigned short) positionIndex :(BOOL)hidden
 {
     self = [super initWithFrame:frame];
     if (self) {
@@ -38,8 +38,12 @@
         self.cardValue = cardValue;
         self.cardBack = cardBack;
         self.faceDown = faceDown;
+        self.previousFaceDown = faceDown;
         self.position = position;
+        self.previousPosition = position;
         self.positionIndex = positionIndex;
+        self.previousPositionIndex = positionIndex;
+        self.hidden = hidden;
         self.indent = 0;
         self.tapped = NO;
         self.image = [UIImage imageNamed:[self cardFileImageName:cardValue :cardBack :faceDown]];
@@ -75,9 +79,11 @@
 {
     if (self.faceDown) {
         self.faceDown = NO;
+        self.previousFaceDown = YES;
         self.image = [UIImage imageNamed:[self cardFileImageName:self.cardValue :self.cardBack :self.faceDown]];
     } else {
         self.faceDown = YES;
+        self.previousFaceDown = NO;
         self.image = [UIImage imageNamed:[self cardFileImageName:self.cardValue :self.cardBack :self.faceDown]];
     }
 }

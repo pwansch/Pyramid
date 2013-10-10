@@ -39,8 +39,19 @@
                                     <action selector="newGame:" destination="aVO-UE-KGo" eventType="touchUpInside" id="OTR-dm-82S"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="qTu-Dt-unp">
+                                <rect key="frame" x="88" y="978" width="60" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <state key="normal" title="Undo">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="undo:" destination="aVO-UE-KGo" eventType="touchUpInside" id="gNa-cR-LO9"/>
+                                </connections>
+                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="tC1-o9-mQI">
-                                <rect key="frame" x="88" y="978" width="90" height="30"/>
+                                <rect key="frame" x="156" y="978" width="90" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <state key="normal" title="Pause">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -58,6 +69,7 @@
                         <outlet property="gameButton" destination="aOm-yt-azd" id="6hh-p7-a3e"/>
                         <outlet property="infoButton" destination="K2B-x1-CWn" id="4JD-iF-ReN"/>
                         <outlet property="pauseButton" destination="tC1-o9-mQI" id="EOH-gK-ihe"/>
+                        <outlet property="undoButton" destination="qTu-Dt-unp" id="gYQ-pK-2XL"/>
                         <segue destination="FTa-do-hRx" kind="popover" identifier="showAlternate" popoverAnchorView="K2B-x1-CWn" id="pXF-iP-W5x">
                             <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
                         </segue>
@@ -131,6 +143,9 @@
                             <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="Yt4-EB-qlk">
                                 <rect key="frame" x="251" y="175" width="51" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <action selector="timerSwitchChanged:" destination="FTa-do-hRx" eventType="valueChanged" id="g3B-DU-fCV"/>
+                                </connections>
                             </switch>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="7Qs-WS-uGZ">
                                 <rect key="frame" x="20" y="300" width="280" height="40"/>
@@ -163,6 +178,9 @@
                                 <rect key="frame" x="20" y="347" width="280" height="485"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" none="YES" staticText="YES"/>
+                                </accessibility>
                                 <string key="text">Pyramid is a challenging solitaire card game. It begins with a shuffled deck and 28 cards dealt in a pyramid shape on the screen. The rest of the cards are placed face-down in the top left corner. You may play any free card or any card that will be made free by removing the card you have just selected. Cards are removed by matching two cards whose ranks add up to 13. Kings are removed individually. Cards from the remaining deck may also be used to make a match of 13. Only the card on top of the turned-over stack may be played. You win when all the cards in the pyramid have been removed. If more than one option is available for a card, consider your choices carefully. If you can remove a card that will free up another much needed card, this is probably the better move. Match the cards in the pyramid before resorting to the deck cards. You may need those cards later when matching from the pyramid is more difficult.
 
 There are two scoring options available in Pyramid, depending on whether or not Timer is selected. If Timer is selected you start the game with $-28. For each match made you receive $13. Flipping a deck card costs $1 and flipping over the deck for reuse costs $5. Every 10 seconds of play cost you $1. Starting a new game costs you $28 plus $5 for each card left on the table. The dollar amount carries over from one game to the next and can be reset by choosing Reset Casino Score. If Timer is not selected you start the game with -28 points. For each match made you receive 13 points. Flipping a deck card costs 1 point and flipping over the deck for reuse costs 5 points. Starting a new game costs you 28 points.</string>
@@ -177,6 +195,7 @@ There are two scoring options available in Pyramid, depending on whether or not 
                         <outlet property="animationSwitch" destination="PXx-r5-Cd8" id="Lte-nz-Okp"/>
                         <outlet property="cardBackControl" destination="rQ3-MR-hEO" id="05S-hG-Pdg"/>
                         <outlet property="oneControl" destination="zKf-HF-sBm" id="Xmq-KP-xpa"/>
+                        <outlet property="resetButton" destination="7Qs-WS-uGZ" id="gCk-yo-z20"/>
                         <outlet property="soundSwitch" destination="VIf-jk-1Vh" id="lyb-7B-tSA"/>
                         <outlet property="timerSwitch" destination="Yt4-EB-qlk" id="BKv-OE-eF7"/>
                         <outlet property="turnOverSwitch" destination="DM1-bm-eUa" id="Oqr-Rd-3EC"/>

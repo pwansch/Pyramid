@@ -22,6 +22,7 @@
 @property (strong, nonatomic) IBOutlet UISwitch *soundSwitch;
 @property (strong, nonatomic) IBOutlet UISwitch *timerSwitch;
 @property (strong, nonatomic) IBOutlet UISwitch *turnOverSwitch;
+@property (strong, nonatomic) IBOutlet UIButton *resetButton;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *cardBackControl;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *oneControl;
 

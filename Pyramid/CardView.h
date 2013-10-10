@@ -20,12 +20,15 @@ typedef enum _CardPosition {
 @property (assign, nonatomic) unsigned short cardValue;
 @property (assign, nonatomic) unsigned short cardBack;
 @property (assign, nonatomic) CardPosition position;
+@property (assign, nonatomic) CardPosition previousPosition;
 @property (assign, nonatomic) unsigned short positionIndex;
+@property (assign, nonatomic) unsigned short previousPositionIndex;
 @property (assign, nonatomic) unsigned short indent;
 @property (assign, nonatomic) BOOL faceDown;
+@property (assign, nonatomic) BOOL previousFaceDown;
 @property (assign, nonatomic) BOOL tapped;
 
-- (id)initWithFrame:(CGRect)frame :(unsigned short)cardValue :(unsigned short)cardBack :(BOOL)faceDown :(CardPosition)position :(unsigned short) positionIndex;
+- (id)initWithFrame:(CGRect)frame :(unsigned short)cardValue :(unsigned short)cardBack :(BOOL)faceDown :(CardPosition)position :(unsigned short) positionIndex :(BOOL)hidden;
 - (void)flipCard;
 - (void)tapCard;
 - (void)setBack:(unsigned short)back;

@@ -23,10 +23,15 @@
 @interface MainViewController : UIViewController <FlipsideViewControllerDelegate, UIPopoverControllerDelegate, UIActionSheetDelegate>
 
 @property (strong, nonatomic) IBOutlet UIButton *gameButton;
+@property (strong, nonatomic) IBOutlet UIButton *undoButton;
 @property (strong, nonatomic) IBOutlet UIButton *pauseButton;
 @property (strong, nonatomic) IBOutlet UIButton *infoButton;
 @property (strong, nonatomic) UIPopoverController *flipsidePopoverController;
 @property (strong, nonatomic) CardView *firstCard;
+@property (strong, nonatomic) CardView *undoCard1;
+@property (strong, nonatomic) CardView *undoCard2;
+@property (assign, nonatomic) long lUndoScore;
+@property (assign, nonatomic) long lUndoCasinoScore;
 @property (strong, nonatomic) CADisplayLink *gameTimer;
 @property (strong, nonatomic) NSMutableArray *stack;
 @property (strong, nonatomic) NSMutableArray *stackDown;
@@ -41,16 +46,19 @@
 @property (assign, nonatomic) SystemSoundID selectId;
 @property (assign, nonatomic) SystemSoundID flipId;
 @property (assign, nonatomic) SystemSoundID wonId;
-@property (assign, atomic) BOOL fAnimation;
+@property (assign, nonatomic) SystemSoundID undoId;
+@property (assign, nonatomic) BOOL fAnimation;
 @property (assign, nonatomic) BOOL m_sound;
+@property (assign, nonatomic) BOOL isAnimating;
 @property (assign, nonatomic) BOOL m_started;
 @property (assign, nonatomic) BOOL fOne;
 @property (assign, nonatomic) short sCardBack;
 @property (assign, nonatomic) BOOL fGameOver;
-
+@property (assign, atomic) BOOL fUndo;
 
 - (IBAction)newGame:(id)sender;
 - (IBAction)pauseGame:(id)sender;
+- (IBAction)undo:(id)sender;
 - (void)playSound:(SystemSoundID)soundID;
 - (void)updateScore:(CADisplayLink*)sender;
 - (void)handleTap:(UIGestureRecognizer *)gestureRecognizer;

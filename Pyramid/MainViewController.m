@@ -15,8 +15,6 @@
 
 @implementation MainViewController
 
-@synthesize gameButton;
-@synthesize pauseButton;
 @synthesize newId;
 @synthesize continueId;
 @synthesize pauseId;
@@ -25,7 +23,7 @@
 @synthesize selectId;
 @synthesize flipId;
 @synthesize wonId;
-@synthesize fGameOver;
+@synthesize undoId;
 
 - (void)viewDidLoad
 {
@@ -51,9 +49,12 @@
     AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:path], &flipId);
     path = [[NSBundle mainBundle] pathForResource:@"won" ofType:@"wav"];
     AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:path], &wonId);
+    path = [[NSBundle mainBundle] pathForResource:@"undo" ofType:@"wav"];
+    AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:path], &undoId);
     
     // Initialize settings
     self.m_started = NO;
+    self.isAnimating = NO;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     self.fAnimation = [defaults boolForKey:kAnimationKey];
     self.m_sound = [defaults boolForKey:kSoundKey];
@@ -132,11 +133,13 @@
 
 - (void)flipsideViewControllerResetScores
 {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     MainView *mainView = (MainView *)self.view;
-    mainView.lCasinoScore = -28;
+    mainView.lCasinoScore = [defaults integerForKey:kCasinoScoreKey];
     [mainView invalidateLine:1];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Reset Casino Score" message:@"Casino score reset to $-28." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alert show];
 }
-
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
 {
@@ -145,14 +148,17 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    MainView *mainView = (MainView *)self.view;
     if ([[segue identifier] isEqualToString:@"showAlternate"]) {
         [[segue destinationViewController] setDelegate:self];
-        
+
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             UIPopoverController *popoverController = [(UIStoryboardPopoverSegue *)segue popoverController];
             self.flipsidePopoverController = popoverController;
             popoverController.delegate = self;
         }
+        FlipsideViewController *controller = [segue destinationViewController];
+        [controller.resetButton setEnabled:(mainView.fTimer ? YES : NO)];
     }
 }
 
@@ -162,11 +168,10 @@
     if(!self.fGameOver) {
         if (!self.m_started) {
             self.m_started = YES;
-            if (mainView.fTimer && self.m_started) {
-                self.pauseButton.hidden = NO;
-            } else {
-                self.pauseButton.hidden = YES;
-            }
+            self.undoButton.hidden = NO;
+            self.pauseButton.hidden = (mainView.fTimer ? NO : YES);
+            mainView.text = nil;
+            [mainView invalidateText];
         }
         else {
             UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Do you want to start a new game?" delegate:self cancelButtonTitle:@"No" destructiveButtonTitle:@"Yes" otherButtonTitles:nil];
@@ -233,6 +238,7 @@
     
 	// Release any retained subviews of the main view
 	self.gameButton = nil;
+    self.undoButton = nil;
     self.pauseButton = nil;
     self.infoButton = nil;
     self.flipsidePopoverController = nil;
@@ -246,6 +252,7 @@
     AudioServicesDisposeSystemSoundID(selectId);
     AudioServicesDisposeSystemSoundID(flipId);
     AudioServicesDisposeSystemSoundID(wonId);
+    AudioServicesDisposeSystemSoundID(undoId);
 }
 
 - (void) playSound:(SystemSoundID)soundID {
@@ -262,6 +269,12 @@
     
 	// Initialize the game
     self.fGameOver = NO;
+    self.fUndo = NO;
+    self.lUndoScore = 0;
+    self.lUndoCasinoScore = 0;
+    self.undoCard1 = nil;
+    self.undoCard2 = nil;
+    self.undoButton.hidden = (self.m_started ? NO : YES);
     [self.pauseButton setTitle:@"Pause" forState:UIControlStateNormal];
     if (mainView.fTimer && self.m_started) {
         self.pauseButton.hidden = NO;
@@ -271,7 +284,11 @@
     mainView.fPaused = NO;
 	mainView.ulTime = 0;
     mainView.lScore = -NOINDEXES;
-    mainView.text = nil;
+    if (!self.m_started) {
+        mainView.text = [[NSString alloc] initWithFormat: @"Tap New to start."];
+    } else {
+        mainView.text = nil;
+    }
     
     // Update the view
     [mainView invalidateLine:1];
@@ -305,37 +322,144 @@
     for (int i = 0; i < NOCARDS; i++) {
         fPicked[i] = NO;
     }
-    for (int i = 0; i < NOINDEXES; i++) {
-		do {
-			sTemp = abs(random() % NOCARDS);
-		} while (fPicked[sTemp]);
-		fPicked[sTemp] = YES;
-        card = [[CardView alloc] initWithFrame:[mainView cardFrame:i] :sTemp :self.sCardBack :NO :Cards :i];
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
-        tap.numberOfTapsRequired = 1;
-        [card addGestureRecognizer:tap];
-        [self.cards addObject:card];
-        [self.view addSubview:card];
-    }
-    
+
+    // Stack first to improve animation
     for (int i = 0; i < (NOCARDS - NOINDEXES); i++) {
 		do {
 			sTemp = abs(random() % NOCARDS);
 		} while (fPicked[sTemp]);
 		fPicked[sTemp] = YES;
-        card = [[CardView alloc] initWithFrame:[mainView stackFrame] :sTemp :self.sCardBack :YES :Stack :i];
+        card = [[CardView alloc] initWithFrame:[mainView stackFrame] :sTemp :self.sCardBack :YES :Stack :i :NO];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
         tap.numberOfTapsRequired = 1;
         [card addGestureRecognizer:tap];
         [self.stack addObject:card];
         [self.view addSubview:card];
     }
+
+    // Animate cards
+    NSTimeInterval delay = 0.0;
+    for (int i = 0; i < NOINDEXES; i++) {
+		do {
+			sTemp = abs(random() % NOCARDS);
+		} while (fPicked[sTemp]);
+		fPicked[sTemp] = YES;
+        
+        if (!self.fAnimation) {
+            card = [[CardView alloc] initWithFrame:[mainView cardFrame:i] :sTemp :self.sCardBack :NO :Cards :i :NO];
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+            tap.numberOfTapsRequired = 1;
+            [card addGestureRecognizer:tap];
+        } else {
+            self.isAnimating = true;
+            card = [[CardView alloc] initWithFrame:[mainView stackFrame] :sTemp :self.sCardBack :NO :Cards :i :NO];
+        }
+        [self.cards addObject:card];
+        [self.view addSubview:card];
+        if (self.fAnimation) {
+            [UIView animateWithDuration:0.5
+                                  delay:delay
+                                options:UIViewAnimationOptionCurveLinear
+                             animations:^{ card.frame = [mainView cardFrame:i]; }
+                             completion:^(BOOL finished) {
+                                 UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+                                 tap.numberOfTapsRequired = 1;
+                                 [card addGestureRecognizer:tap];
+                                 if (card.positionIndex == (NOINDEXES - 1)) {
+                                     self.isAnimating = NO;
+                                 }
+                             }
+             ];
+            delay += 0.1;
+        }
+    }
+    
     self.firstCard = nil;
+}
+
+- (IBAction)undo:(id)sender
+{
+    if(!self.fGameOver && self.m_started && self.fUndo) {
+        // Create collection of undo cards
+        NSMutableArray *undoCards = [[NSMutableArray alloc] initWithCapacity:2];
+        if (self.undoCard1 != nil) {
+            [undoCards addObject:self.undoCard1];
+        }
+        if (self.undoCard2 != nil) {
+            [undoCards addObject:self.undoCard2];
+        }
+
+        MainView *mainView = (MainView *)self.view;
+        for (CardView *card in undoCards) {
+            switch (card.position) {
+                case Cards:
+                    [self.cards removeObject:card];
+                    break;
+                case Stack:
+                    [self.stack removeObject:card];
+                    break;
+                case StackDown:
+                    [self.stackDown removeObject:card];
+                    break;
+                case Down:
+                    [self.down removeObject:card];
+                    break;
+            }
+            
+            // Add to destination
+            card.position = card.previousPosition;
+            card.positionIndex = card.previousPositionIndex;
+            CGRect frame;
+            switch (card.previousPosition) {
+                case Cards:
+                    card.frame = [mainView cardFrame:card.previousPositionIndex];
+                    [self.cards replaceObjectAtIndex:card.previousPositionIndex withObject:card];
+                    break;
+                case Stack:
+                    card.frame = [mainView stackFrame];
+                    [self.stack addObject:card];
+                    break;
+                case StackDown:
+                    frame = [mainView stackDownFrame];
+                    frame.origin.x += card.indent * [mainView indent];
+                    card.frame = frame;
+                    [self.stackDown addObject:card];
+                    break;
+                case Down:
+                    card.frame = [mainView downFrame];
+                    [self.down addObject:card];
+                    break;
+            }
+            
+            // Do I need to flip the undo card
+            if (card.previousFaceDown != card.faceDown) {
+                [card flipCard];
+            }
+        }
+        
+        // Undo score
+        mainView.lScore -= self.lUndoScore;
+        mainView.lCasinoScore -= self.lUndoCasinoScore;
+        [mainView invalidateLine:1];
+        
+        self.fUndo = NO;
+        self.lUndoScore = 0;
+        self.lUndoCasinoScore = 0;
+        self.undoCard1 = nil;
+        self.undoCard2 = nil;
+        
+        // Play the undo game sound
+        [self playSound:undoId];
+    }
+    else {
+        // Unable to undo
+        [self playSound:illegalId];
+    }
 }
 
 - (void)handleTap:(UIGestureRecognizer *)gestureRecognizer
 {
-    if (!self.fGameOver && self.m_started) {
+    if (!self.fGameOver && self.m_started && !self.isAnimating) {
         MainView *mainView = (MainView *)self.view;
         BOOL fClicked = NO;
         CardView *tappedCard = (CardView *)gestureRecognizer.view;
@@ -357,19 +481,44 @@
 			{
 				[self playSound:matchId];
                 if(tappedCard.position == StackDown) {
-                    tappedCard.indent = 0;
                     [self.stackDown removeObject:tappedCard];
                 } else if(self.firstCard.position == Cards) {
                     [self.cards replaceObjectAtIndex:tappedCard.positionIndex withObject:[NSNull null]];
                 }
                 [mainView bringSubviewToFront:tappedCard];
-                tappedCard.frame = [mainView downFrame];
+                tappedCard.previousPosition = tappedCard.position;
+                tappedCard.previousPositionIndex = tappedCard.positionIndex;
+                tappedCard.previousFaceDown = tappedCard.faceDown;
                 tappedCard.position = Down;
+                if (self.fAnimation) {
+                    self.isAnimating = YES;
+                    [UIView animateWithDuration:0.5
+                                          delay:0.0
+                                        options:UIViewAnimationOptionCurveLinear
+                                     animations:^{ tappedCard.frame = [mainView downFrame]; }
+                                     completion:^(BOOL finished) {
+                                         self.isAnimating = NO;
+                                     }
+                     ];
+                } else {
+                    tappedCard.frame = [mainView downFrame];
+                }
                 [self.down addObject:tappedCard];
+                self.lUndoScore = 13;
 				mainView.lScore += 13;
-				if(mainView.fTimer)
+				if(mainView.fTimer) {
+                    self.lUndoCasinoScore = 13;
 					mainView.lCasinoScore += 13;
+                } else {
+                    self.lUndoCasinoScore = 0;
+                }
+                
                 [mainView invalidateLine:1];
+                
+                // Save undo information
+                self.undoCard1 = tappedCard;
+                self.undoCard2 = nil;
+                self.fUndo = YES;
 			}
 			else
 			{
@@ -392,32 +541,70 @@
 				// beide kommen weg
 				[self playSound:matchId];
                 if(tappedCard.position == StackDown) {
-                    tappedCard.indent = 0;
                     [self.stackDown removeObject:tappedCard];
                 } else if(tappedCard.position == Cards) {
                     [self.cards replaceObjectAtIndex:tappedCard.positionIndex withObject:[NSNull null]];
                 }
                 [mainView bringSubviewToFront:tappedCard];
-                tappedCard.frame = [mainView downFrame];
+                tappedCard.previousPosition = tappedCard.position;
+                tappedCard.previousPositionIndex = tappedCard.positionIndex;
+                tappedCard.previousFaceDown = tappedCard.faceDown;
                 tappedCard.position = Down;
+                if (self.fAnimation) {
+                    self.isAnimating = YES;
+                    [UIView animateWithDuration:0.5
+                                          delay:0.2
+                                        options:UIViewAnimationOptionCurveLinear
+                                     animations:^{ tappedCard.frame = [mainView downFrame]; }
+                                     completion:^(BOOL finished) {
+                                     }
+                     ];
+                } else {
+                    tappedCard.frame = [mainView downFrame];
+                }
                 [self.down addObject:tappedCard];
-                [self.cards replaceObjectAtIndex:tappedCard.positionIndex withObject:[NSNull null]];
-                mainView.lScore += 13;
-				if(mainView.fTimer)
+                self.lUndoScore = 13;
+				mainView.lScore += 13;
+				if(mainView.fTimer) {
+                    self.lUndoCasinoScore = 13;
 					mainView.lCasinoScore += 13;
+                } else {
+                    self.lUndoCasinoScore = 0;
+                }
                 [mainView invalidateLine:1];
+                
+                // Save undo information
+                self.undoCard1 = tappedCard;
                     
 				// karte entfernen
                 if(self.firstCard.position == StackDown) {
-                    self.firstCard.indent = 0;
                     [self.stackDown removeObject:self.firstCard];
                 } else if(self.firstCard.position == Cards) {
                     [self.cards replaceObjectAtIndex:self.firstCard.positionIndex withObject:[NSNull null]];
                 }
                 [self.firstCard bringSubviewToFront:tappedCard];
-                self.firstCard.frame = [mainView downFrame];
+                self.firstCard.previousPosition = self.firstCard.position;
+                self.firstCard.previousPositionIndex = self.firstCard.positionIndex;
+                self.firstCard.previousFaceDown = self.firstCard.faceDown;
                 self.firstCard.position = Down;
+                [self.firstCard tapCard];
+                if (self.fAnimation) {
+                    [UIView animateWithDuration:0.5
+                                          delay:0.0
+                                        options:UIViewAnimationOptionCurveLinear
+                                     animations:^{ self.firstCard.frame = [mainView downFrame]; }
+                                     completion:^(BOOL finished) {
+                                         self.isAnimating = NO;
+                                     }
+                     ];
+                } else {
+                    self.firstCard.frame = [mainView downFrame];
+                }
                 [self.down addObject:self.firstCard];
+                
+                // Save undo information
+                self.undoCard2 = self.firstCard;
+                self.fUndo = YES;
                 self.firstCard = nil;
             }
 			else
@@ -447,21 +634,44 @@
                 }
                 
 				// Karte aufdecken und in Stack down stecken
-				[self playSound:flipId];
                 CardView *card = [self.stack lastObject];
-                [card flipCard];
-                [mainView bringSubviewToFront:card];
-                CGRect frame = [mainView stackDownFrame];
-                frame.origin.x += k * [mainView indent];
-                card.frame = frame;
-                card.indent = k;
-                card.position = StackDown;
-                [self.stackDown addObject:card];
-                [self.stack removeObject:card];
-				mainView.lScore--;
-				if(mainView.fTimer)
-					mainView.lCasinoScore--;
-                [mainView invalidateLine:1];
+                if (card != nil) {
+                    [self playSound:flipId];
+                
+                    if (self.fAnimation) {
+                        self.isAnimating = YES;
+                        [UIView transitionWithView:card
+                                          duration:(0.5 * (k + 1))
+                                           options:UIViewAnimationOptionTransitionFlipFromLeft
+                                        animations:^{ [card flipCard]; }
+                                        completion:^(BOOL finished) {
+                                            if (k == (sCount - 1)) {
+                                                self.isAnimating = NO;
+                                            }
+                                        }];
+                    } else {
+                        [card flipCard];
+                    }
+                    [mainView bringSubviewToFront:card];
+                    CGRect frame = [mainView stackDownFrame];
+                    frame.origin.x += k * [mainView indent];
+                    card.frame = frame;
+                    card.indent = k;
+                    card.position = StackDown;
+                    [self.stackDown addObject:card];
+                    [self.stack removeObject:card];
+                    mainView.lScore--;
+                    if(mainView.fTimer)
+                        mainView.lCasinoScore--;
+                    [mainView invalidateLine:1];
+                }
+                
+                // Undo is not enabled by default
+                self.fUndo = NO;
+                self.lUndoScore = 0;
+                self.lUndoCasinoScore = 0;
+                self.undoCard1 = nil;
+                self.undoCard2 = nil;
 			}
         }
         
@@ -470,8 +680,10 @@
 			// Spiel gewonnen
 			self.fGameOver = YES;
             [self playSound:wonId];
+            self.undoButton.hidden = YES;
             self.pauseButton.hidden = YES;
             mainView.text = [[NSString alloc] initWithFormat: @"You win."];
+            [mainView invalidateText];
 		}
         
 		if(!fClicked)
@@ -481,10 +693,9 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (!self.fGameOver && self.m_started) {
-        MainView *mainView = (MainView *)self.view;
-    
+    if (!self.fGameOver && self.m_started && !self.isAnimating) {
         // Get touch position
+        MainView *mainView = (MainView *)self.view;
         UITouch *touch = [touches anyObject];
         CGPoint point = [touch locationInView:mainView];
         if (CGRectContainsPoint([mainView stackFrame], point)) {
@@ -493,20 +704,42 @@
                 // es sind keine Karten mehr am Stapel
                 // letzte Karte suchen
                 [self playSound:flipId];
+                int cardNumber = 0;
+                NSInteger totalCount = [self.stackDown count];
                 NSEnumerator *enumerator = [self.stackDown reverseObjectEnumerator];
                 for (CardView *card in enumerator) {
-                    [card flipCard];
+                    if (self.fAnimation) {
+                        self.isAnimating = YES;
+                        [UIView transitionWithView:card
+                                          duration:(0.5 + (cardNumber * 0.1))
+                                           options:UIViewAnimationOptionTransitionFlipFromLeft
+                                        animations:^{ [card flipCard]; }
+                                        completion:^(BOOL finished) {
+                                            if (cardNumber == (totalCount - 1)) {
+                                                self.isAnimating = NO;
+                                            }
+                                        }];
+                    } else {
+                        [card flipCard];
+                    }
+                    cardNumber++;
                     [mainView bringSubviewToFront:card];
                     card.frame = [mainView stackFrame];
                     card.position = Stack;
                     [self.stack addObject:card];
-                    card.indent = 0;
                     [self.stackDown removeObject:card];
                     mainView.lScore -= 5;
                     if(mainView.fTimer)
                         mainView.lCasinoScore -= 5;
                     [mainView invalidateLine:1];
                 }
+
+                // Undo is not enabled by default
+                self.fUndo = NO;
+                self.lUndoScore = 0;
+                self.lUndoCasinoScore = 0;
+                self.undoCard1 = nil;
+                self.undoCard2 = nil;
             }
             else
                 [self playSound:illegalId];

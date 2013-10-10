@@ -18,8 +18,6 @@
 
 @implementation MainView
 
-@synthesize text;
-
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -227,10 +225,10 @@
     CGPoint offsetPoint = [self offsetPoint];
     UIFont *font = [UIFont systemFontOfSize:FONT_SIZE_LINE];
     CGRect rectLineIndex[4] = {
-        {offsetPoint.x, offsetPoint.y + cardSize.height + font.pointSize * 0.5, cardSize.width, font.pointSize},
-        {offsetPoint.x, offsetPoint.y + cardSize.height + font.pointSize * 1.5, cardSize.width, font.pointSize},
-        {offsetPoint.x, offsetPoint.y + cardSize.height + font.pointSize * 2.5, cardSize.width, font.pointSize},
-        {offsetPoint.x, offsetPoint.y + cardSize.height + font.pointSize * 3.5, cardSize.width, font.pointSize}};
+        {offsetPoint.x, offsetPoint.y + cardSize.height + font.pointSize * 0.5, cardSize.width, 2 * font.pointSize},
+        {offsetPoint.x, offsetPoint.y + cardSize.height + font.pointSize * 1.5, cardSize.width, 2 * font.pointSize},
+        {offsetPoint.x, offsetPoint.y + cardSize.height + font.pointSize * 2.5, cardSize.width, 2 * font.pointSize},
+        {offsetPoint.x, offsetPoint.y + cardSize.height + font.pointSize * 3.5, cardSize.width, 2 * font.pointSize}};
     return rectLineIndex[lineIndex];
 }
 
@@ -243,7 +241,7 @@
     CGPoint offsetPoint = [self offsetPoint];
     CGRect statusBarFrame = [self statusBarFrameViewRect];
     UIFont *font = [UIFont systemFontOfSize:FONT_SIZE_LINE];
-    return CGRectMake(0, statusBarFrame.size.height + (offsetPoint.y - statusBarFrame.size.height - font.pointSize) / 2, self.bounds.size.width, font.pointSize);
+    return CGRectMake(0, statusBarFrame.size.height + (offsetPoint.y - statusBarFrame.size.height - font.pointSize * 2) / 2, self.bounds.size.width, font.pointSize * 2);
 }
 
 - (void)invalidateText
