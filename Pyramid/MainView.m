@@ -225,10 +225,10 @@
     CGPoint offsetPoint = [self offsetPoint];
     UIFont *font = [UIFont systemFontOfSize:FONT_SIZE_LINE];
     CGRect rectLineIndex[4] = {
-        {offsetPoint.x, offsetPoint.y + cardSize.height + font.pointSize * 0.5, cardSize.width, 2 * font.pointSize},
-        {offsetPoint.x, offsetPoint.y + cardSize.height + font.pointSize * 1.5, cardSize.width, 2 * font.pointSize},
-        {offsetPoint.x, offsetPoint.y + cardSize.height + font.pointSize * 2.5, cardSize.width, 2 * font.pointSize},
-        {offsetPoint.x, offsetPoint.y + cardSize.height + font.pointSize * 3.5, cardSize.width, 2 * font.pointSize}};
+        {offsetPoint.x, offsetPoint.y + cardSize.height, cardSize.width, 2 * font.pointSize},
+        {offsetPoint.x, offsetPoint.y + cardSize.height + font.pointSize, cardSize.width, 2 * font.pointSize},
+        {offsetPoint.x, offsetPoint.y + cardSize.height + font.pointSize * 2, cardSize.width, 2 * font.pointSize},
+        {offsetPoint.x, offsetPoint.y + cardSize.height + font.pointSize * 3, cardSize.width, 2 * font.pointSize}};
     return rectLineIndex[lineIndex];
 }
 

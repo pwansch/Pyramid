@@ -10,7 +10,7 @@
 #import "MainView.h"
 
 @interface MainViewController ()
-
+- (void) changeCardFrames;
 @end
 
 @implementation MainViewController
@@ -24,6 +24,7 @@
 @synthesize flipId;
 @synthesize wonId;
 @synthesize undoId;
+@synthesize shuffleId;
 
 - (void)viewDidLoad
 {
@@ -51,6 +52,8 @@
     AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:path], &wonId);
     path = [[NSBundle mainBundle] pathForResource:@"undo" ofType:@"wav"];
     AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:path], &undoId);
+    path = [[NSBundle mainBundle] pathForResource:@"shuffle" ofType:@"wav"];
+    AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:path], &shuffleId);
     
     // Initialize settings
     self.m_started = NO;
@@ -78,6 +81,14 @@
     self.lastTime = 0.0;
     self.gameTimer = [CADisplayLink displayLinkWithTarget:self selector:@selector(updateScore:)];
     [self.gameTimer addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    // Adjust the card frames if necessary
+    [self changeCardFrames];
 }
 
 - (void)didReceiveMemoryWarning
@@ -253,6 +264,7 @@
     AudioServicesDisposeSystemSoundID(flipId);
     AudioServicesDisposeSystemSoundID(wonId);
     AudioServicesDisposeSystemSoundID(undoId);
+    AudioServicesDisposeSystemSoundID(shuffleId);
 }
 
 - (void) playSound:(SystemSoundID)soundID {
@@ -703,7 +715,7 @@
             {
                 // es sind keine Karten mehr am Stapel
                 // letzte Karte suchen
-                [self playSound:flipId];
+                [self playSound:shuffleId];
                 int cardNumber = 0;
                 NSInteger totalCount = [self.stackDown count];
                 NSEnumerator *enumerator = [self.stackDown reverseObjectEnumerator];
@@ -768,21 +780,8 @@
     }
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        return YES;
-    } else {
-        return (interfaceOrientation !=	UIInterfaceOrientationPortraitUpsideDown);
-    }
-}
-
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    // Dismiss popover if it is displayed
-    if (self.flipsidePopoverController != nil) {
-        [self.flipsidePopoverController dismissPopoverAnimated:YES];
-        self.flipsidePopoverController = nil;
-    }
-    
+- (void) changeCardFrames
+{
     // Change the location of the cards
     MainView *mainView = (MainView *)self.view;
     for (CardView *card in self.cards) {
@@ -807,6 +806,24 @@
     for (CardView *card in self.down) {
         card.frame = [mainView downFrame];
     }
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        return YES;
+    } else {
+        return (interfaceOrientation !=	UIInterfaceOrientationPortraitUpsideDown);
+    }
+}
+
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    // Dismiss popover if it is displayed
+    if (self.flipsidePopoverController != nil) {
+        [self.flipsidePopoverController dismissPopoverAnimated:YES];
+        self.flipsidePopoverController = nil;
+    }
+    
+    [self changeCardFrames];
 }
 
 - (BOOL)cardTappable:(unsigned short)cardIndex {

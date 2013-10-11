@@ -187,6 +187,9 @@ There are two scoring options available in Pyramid, depending on whether or not 
                             </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <connections>
+                            <outlet property="delegate" destination="kIf-nA-PKG" id="8pS-6h-YEx"/>
+                        </connections>
                     </view>
                     <connections>
                         <outlet property="animationSwitch" destination="Tzb-fb-v04" id="BpU-eG-MOJ"/>
@@ -194,6 +197,7 @@ There are two scoring options available in Pyramid, depending on whether or not 
                         <outlet property="oneControl" destination="ANf-Ho-25u" id="svh-SJ-G6b"/>
                         <outlet property="resetButton" destination="mCX-xW-L7m" id="I8d-tH-5JH"/>
                         <outlet property="soundSwitch" destination="qaD-FO-wRC" id="aZF-pj-0JQ"/>
+                        <outlet property="textView" destination="xFP-DI-yLd" id="AOq-TV-S6c"/>
                         <outlet property="timerSwitch" destination="YcR-Kv-r9c" id="vXc-6z-bsR"/>
                         <outlet property="turnOverSwitch" destination="cch-OG-ZEz" id="O93-Jm-42z"/>
                     </connections>

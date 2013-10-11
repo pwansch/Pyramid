@@ -197,6 +197,7 @@ There are two scoring options available in Pyramid, depending on whether or not 
                         <outlet property="oneControl" destination="zKf-HF-sBm" id="Xmq-KP-xpa"/>
                         <outlet property="resetButton" destination="7Qs-WS-uGZ" id="gCk-yo-z20"/>
                         <outlet property="soundSwitch" destination="VIf-jk-1Vh" id="lyb-7B-tSA"/>
+                        <outlet property="textView" destination="pUI-Vd-NI7" id="dc2-k6-HpX"/>
                         <outlet property="timerSwitch" destination="Yt4-EB-qlk" id="BKv-OE-eF7"/>
                         <outlet property="turnOverSwitch" destination="DM1-bm-eUa" id="Oqr-Rd-3EC"/>
                     </connections>

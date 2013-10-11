@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AF058D611803C888006F9BEC /* undo.wav in Resources */ = {isa = PBXBuildFile; fileRef = AF058D601803C888006F9BEC /* undo.wav */; };
+		AF24CCEA18078995003A5FB0 /* shuffle.wav in Resources */ = {isa = PBXBuildFile; fileRef = AF24CCE918078995003A5FB0 /* shuffle.wav */; };
 		AF2DF61917F13AF800D3555D /* new.wav in Resources */ = {isa = PBXBuildFile; fileRef = AF2DF61817F13AF800D3555D /* new.wav */; };
 		AF441EEC17F28462007C905C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF441EEB17F28462007C905C /* QuartzCore.framework */; };
 		AF5415CE1800AFC4009F5E42 /* flip.wav in Resources */ = {isa = PBXBuildFile; fileRef = AF5415CD1800AFC4009F5E42 /* flip.wav */; };
@@ -160,6 +161,7 @@
 
 /* Begin PBXFileReference section */
 		AF058D601803C888006F9BEC /* undo.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = undo.wav; sourceTree = "<group>"; };
+		AF24CCE918078995003A5FB0 /* shuffle.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = shuffle.wav; sourceTree = "<group>"; };
 		AF2DF61817F13AF800D3555D /* new.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = new.wav; sourceTree = "<group>"; };
 		AF441EEB17F28462007C905C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		AF5415CD1800AFC4009F5E42 /* flip.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = flip.wav; sourceTree = "<group>"; };
@@ -337,6 +339,7 @@
 		AF2DF61717F13AC900D3555D /* Sound Files */ = {
 			isa = PBXGroup;
 			children = (
+				AF24CCE918078995003A5FB0 /* shuffle.wav */,
 				AF058D601803C888006F9BEC /* undo.wav */,
 				AF5415CF1800BE66009F5E42 /* won.wav */,
 				AF5415CD1800AFC4009F5E42 /* flip.wav */,
@@ -631,6 +634,7 @@
 				AFC2E2F217EE221D00BBAEA1 /* 132.BMP in Resources */,
 				AFC2E33117EE221E00BBAEA1 /* 50.BMP in Resources */,
 				AFC2E30517EE221D00BBAEA1 /* 15.BMP in Resources */,
+				AF24CCEA18078995003A5FB0 /* shuffle.wav in Resources */,
 				AFC2E31917EE221D00BBAEA1 /* 29.BMP in Resources */,
 				AFE8C71717ED2B8800A1BF04 /* Main_iPad.storyboard in Resources */,
 				AFC2E2D917EE221D00BBAEA1 /* 11.BMP in Resources */,
@@ -901,6 +905,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PROVISIONING_PROFILE = "9270A932-849F-47BE-9E49-26F7E45FAEA9";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

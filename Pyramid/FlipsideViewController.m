@@ -21,8 +21,8 @@
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         UIScrollView *scrollView = (UIScrollView *)self.view;
         scrollView.contentSize = CGSizeMake(320.0, 568.0);
-        [super awakeFromNib];
     }
+    [super awakeFromNib];
 }
 
 - (void)viewDidLoad
@@ -38,6 +38,18 @@
 	self.timerSwitch.on = [defaults boolForKey:kTimerKey];
     self.cardBackControl.selectedSegmentIndex = [defaults integerForKey:kCardBackKey];
     self.oneControl.selectedSegmentIndex = ([defaults boolForKey:kOneKey] ? 0 : 1);
+}
+
+//- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+//{
+//    [self.textView setText:@"Hallo"];
+//}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    NSRange r  = {0,0};
+    [self.textView scrollRangeToVisible:r];
+    [super viewWillAppear:animated];
 }
 
 - (void)didReceiveMemoryWarning

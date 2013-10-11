@@ -15,7 +15,7 @@
 - (void)flipsideViewControllerResetScores;
 @end
 
-@interface FlipsideViewController : UIViewController
+@interface FlipsideViewController : UIViewController <UIScrollViewDelegate>
 
 @property (weak, nonatomic) id <FlipsideViewControllerDelegate> delegate;
 @property (strong, nonatomic) IBOutlet UISwitch *animationSwitch;
@@ -23,6 +23,7 @@
 @property (strong, nonatomic) IBOutlet UISwitch *timerSwitch;
 @property (strong, nonatomic) IBOutlet UISwitch *turnOverSwitch;
 @property (strong, nonatomic) IBOutlet UIButton *resetButton;
+@property (strong, nonatomic) IBOutlet UITextView *textView;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *cardBackControl;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *oneControl;
 

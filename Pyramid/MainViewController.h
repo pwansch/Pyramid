@@ -47,6 +47,7 @@
 @property (assign, nonatomic) SystemSoundID flipId;
 @property (assign, nonatomic) SystemSoundID wonId;
 @property (assign, nonatomic) SystemSoundID undoId;
+@property (assign, nonatomic) SystemSoundID shuffleId;
 @property (assign, nonatomic) BOOL fAnimation;
 @property (assign, nonatomic) BOOL m_sound;
 @property (assign, nonatomic) BOOL isAnimating;
