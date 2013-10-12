@@ -18,6 +18,7 @@
 		AF7B392F180246710029E335 /* 0.BMP in Resources */ = {isa = PBXBuildFile; fileRef = AF7B392C180246710029E335 /* 0.BMP */; };
 		AF7B3930180246710029E335 /* 152.BMP in Resources */ = {isa = PBXBuildFile; fileRef = AF7B392D180246710029E335 /* 152.BMP */; };
 		AF7B3931180246710029E335 /* 52.BMP in Resources */ = {isa = PBXBuildFile; fileRef = AF7B392E180246710029E335 /* 52.BMP */; };
+		AF8164F31809B62D00E265F4 /* lost.wav in Resources */ = {isa = PBXBuildFile; fileRef = AF8164F21809B62D00E265F4 /* lost.wav */; };
 		AFC2E2CD17EE221D00BBAEA1 /* 1.BMP in Resources */ = {isa = PBXBuildFile; fileRef = AFC2E25F17EE221D00BBAEA1 /* 1.BMP */; };
 		AFC2E2CE17EE221D00BBAEA1 /* 10.BMP in Resources */ = {isa = PBXBuildFile; fileRef = AFC2E26017EE221D00BBAEA1 /* 10.BMP */; };
 		AFC2E2CF17EE221D00BBAEA1 /* 100.BMP in Resources */ = {isa = PBXBuildFile; fileRef = AFC2E26117EE221D00BBAEA1 /* 100.BMP */; };
@@ -171,6 +172,7 @@
 		AF7B392C180246710029E335 /* 0.BMP */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = 0.BMP; sourceTree = "<group>"; };
 		AF7B392D180246710029E335 /* 152.BMP */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = 152.BMP; sourceTree = "<group>"; };
 		AF7B392E180246710029E335 /* 52.BMP */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = 52.BMP; sourceTree = "<group>"; };
+		AF8164F21809B62D00E265F4 /* lost.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = lost.wav; sourceTree = "<group>"; };
 		AFC2E25F17EE221D00BBAEA1 /* 1.BMP */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = 1.BMP; sourceTree = "<group>"; };
 		AFC2E26017EE221D00BBAEA1 /* 10.BMP */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = 10.BMP; sourceTree = "<group>"; };
 		AFC2E26117EE221D00BBAEA1 /* 100.BMP */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = 100.BMP; sourceTree = "<group>"; };
@@ -339,6 +341,7 @@
 		AF2DF61717F13AC900D3555D /* Sound Files */ = {
 			isa = PBXGroup;
 			children = (
+				AF8164F21809B62D00E265F4 /* lost.wav */,
 				AF24CCE918078995003A5FB0 /* shuffle.wav */,
 				AF058D601803C888006F9BEC /* undo.wav */,
 				AF5415CF1800BE66009F5E42 /* won.wav */,
@@ -705,6 +708,7 @@
 				AFC2E2E017EE221D00BBAEA1 /* 116.BMP in Resources */,
 				AFC2E2CD17EE221D00BBAEA1 /* 1.BMP in Resources */,
 				AFEDE3A517FD01A900707FD2 /* illegal.wav in Resources */,
+				AF8164F31809B62D00E265F4 /* lost.wav in Resources */,
 				AFC2E2E517EE221D00BBAEA1 /* 120.BMP in Resources */,
 				AFC2E31D17EE221D00BBAEA1 /* 32.BMP in Resources */,
 				AFC2E30B17EE221D00BBAEA1 /* 16.BMP in Resources */,
