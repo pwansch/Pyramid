@@ -19,8 +19,9 @@
 {
     self.preferredContentSize = CGSizeMake(320.0, 568.0);
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        self.screenSize = [[UIScreen mainScreen] bounds];
         UIScrollView *scrollView = (UIScrollView *)self.view;
-        scrollView.contentSize = CGSizeMake(320.0, 568.0);
+        scrollView.contentSize = CGSizeMake(self.screenSize.size.width, self.screenSize.size.height);
     }
     [super awakeFromNib];
 }
@@ -38,12 +39,23 @@
 	self.timerSwitch.on = [defaults boolForKey:kTimerKey];
     self.cardBackControl.selectedSegmentIndex = [defaults integerForKey:kCardBackKey];
     self.oneControl.selectedSegmentIndex = ([defaults boolForKey:kOneKey] ? 0 : 1);
+    self.textView.editable = NO;
 }
 
-//- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-//{
-//    [self.textView setText:@"Hallo"];
-//}
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && UIInterfaceOrientationIsPortrait(orientation)) {
+        self.textView.frame = CGRectMake(20, 347, 280, 201);
+    }
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && UIInterfaceOrientationIsLandscape(orientation)) {
+        self.textView.frame = CGRectMake(20, 347, self.screenSize.size.height - 40, 100);
+    }
+}
 
 - (void)viewWillAppear:(BOOL)animated
 {

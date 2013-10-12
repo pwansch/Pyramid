@@ -30,6 +30,7 @@
 @property (strong, nonatomic) CardView *firstCard;
 @property (strong, nonatomic) CardView *undoCard1;
 @property (strong, nonatomic) CardView *undoCard2;
+@property (strong, nonatomic) CardView *undoCard3;
 @property (assign, nonatomic) long lUndoScore;
 @property (assign, nonatomic) long lUndoCasinoScore;
 @property (strong, nonatomic) CADisplayLink *gameTimer;
@@ -50,8 +51,8 @@
 @property (assign, nonatomic) SystemSoundID shuffleId;
 @property (assign, nonatomic) BOOL fAnimation;
 @property (assign, nonatomic) BOOL m_sound;
-@property (assign, nonatomic) BOOL isAnimating;
 @property (assign, nonatomic) BOOL m_started;
+@property (assign, nonatomic) BOOL fFirst;
 @property (assign, nonatomic) BOOL fOne;
 @property (assign, nonatomic) short sCardBack;
 @property (assign, nonatomic) BOOL fGameOver;

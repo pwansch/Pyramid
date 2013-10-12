@@ -26,6 +26,7 @@
 @property (strong, nonatomic) IBOutlet UITextView *textView;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *cardBackControl;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *oneControl;
+@property (assign, nonatomic) CGRect screenSize;
 
 - (IBAction)done:(id)sender;
 - (IBAction)reset:(id)sender;

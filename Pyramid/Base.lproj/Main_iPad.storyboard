@@ -179,7 +179,7 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <accessibility key="accessibilityConfiguration">
-                                    <accessibilityTraits key="traits" none="YES" staticText="YES"/>
+                                    <accessibilityTraits key="traits" none="YES" staticText="YES" notEnabled="YES"/>
                                 </accessibility>
                                 <string key="text">Pyramid is a challenging solitaire card game. It begins with a shuffled deck and 28 cards dealt in a pyramid shape on the screen. The rest of the cards are placed face-down in the top left corner. You may play any free card or any card that will be made free by removing the card you have just selected. Cards are removed by matching two cards whose ranks add up to 13. Kings are removed individually. Cards from the remaining deck may also be used to make a match of 13. Only the card on top of the turned-over stack may be played. You win when all the cards in the pyramid have been removed. If more than one option is available for a card, consider your choices carefully. If you can remove a card that will free up another much needed card, this is probably the better move. Match the cards in the pyramid before resorting to the deck cards. You may need those cards later when matching from the pyramid is more difficult.
 
