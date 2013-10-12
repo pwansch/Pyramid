@@ -45,7 +45,7 @@
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && UIInterfaceOrientationIsPortrait(orientation)) {
-        self.textView.frame = CGRectMake(20, 347, 280, 201);
+        self.textView.frame = CGRectMake(20, 347, 280, self.screenSize.size.height - 367);
     }
 }
 
@@ -53,13 +53,13 @@
 {
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && UIInterfaceOrientationIsLandscape(orientation)) {
-        self.textView.frame = CGRectMake(20, 347, self.screenSize.size.height - 40, 100);
+        self.textView.frame = CGRectMake(20, 347, self.screenSize.size.height - 40, self.screenSize.size.height - 367);
     }
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    NSRange r  = {0,0};
+    NSRange r = {0,0};
     [self.textView scrollRangeToVisible:r];
     [super viewWillAppear:animated];
 }
@@ -96,7 +96,8 @@
     [self.delegate flipsideViewControllerResetScores];
 }
 
-- (void)viewDidUnload {
+- (void)viewDidUnload
+{
 	// Release any retained subviews of the main view
     self.animationSwitch = nil;
 	self.soundSwitch = nil;
