@@ -47,6 +47,7 @@
 @property (assign, nonatomic) SystemSoundID selectId;
 @property (assign, nonatomic) SystemSoundID flipId;
 @property (assign, nonatomic) SystemSoundID wonId;
+@property (assign, nonatomic) SystemSoundID lostId;
 @property (assign, nonatomic) SystemSoundID undoId;
 @property (assign, nonatomic) SystemSoundID shuffleId;
 @property (assign, nonatomic) BOOL fAnimation;
@@ -64,7 +65,7 @@
 - (void)playSound:(SystemSoundID)soundID;
 - (void)updateScore:(CADisplayLink*)sender;
 - (void)handleTap:(UIGestureRecognizer *)gestureRecognizer;
-- (BOOL)cardTappable:(unsigned short)cardIndex;
+- (BOOL)cardTappable:(unsigned short)cardIndex :(CardView *)firstCard;
 - (unsigned short)faceValue:(unsigned short)cardValue;
 
 @end

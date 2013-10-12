@@ -23,6 +23,7 @@
 @synthesize selectId;
 @synthesize flipId;
 @synthesize wonId;
+@synthesize lostId;
 @synthesize undoId;
 @synthesize shuffleId;
 
@@ -50,6 +51,8 @@
     AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:path], &flipId);
     path = [[NSBundle mainBundle] pathForResource:@"won" ofType:@"wav"];
     AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:path], &wonId);
+    path = [[NSBundle mainBundle] pathForResource:@"lost" ofType:@"wav"];
+    AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:path], &lostId);
     path = [[NSBundle mainBundle] pathForResource:@"undo" ofType:@"wav"];
     AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:path], &undoId);
     path = [[NSBundle mainBundle] pathForResource:@"shuffle" ofType:@"wav"];
@@ -266,6 +269,7 @@
     AudioServicesDisposeSystemSoundID(selectId);
     AudioServicesDisposeSystemSoundID(flipId);
     AudioServicesDisposeSystemSoundID(wonId);
+    AudioServicesDisposeSystemSoundID(lostId);
     AudioServicesDisposeSystemSoundID(undoId);
     AudioServicesDisposeSystemSoundID(shuffleId);
 }
@@ -480,7 +484,7 @@
         MainView *mainView = (MainView *)self.view;
         BOOL fClicked = NO;
         CardView *tappedCard = (CardView *)gestureRecognizer.view;
-        if (tappedCard.position == Cards && [self cardTappable:tappedCard.positionIndex]) {
+        if (tappedCard.position == Cards && [self cardTappable:tappedCard.positionIndex :self.firstCard]) {
             goto _bearbeiten;
         } else if (tappedCard.position == StackDown && tappedCard == [self.stackDown lastObject]) {
             goto _bearbeiten;
@@ -706,6 +710,20 @@
             mainView.text = [[NSString alloc] initWithFormat: @"You win."];
             [mainView invalidateText];
 		}
+
+        // Check if moves are possible
+        if (![self isMovePossible]) {
+			// Spiel verloren
+            if (self.firstCard != nil && self.firstCard.tapped) {
+                [self.firstCard tapCard];
+            }
+			self.fGameOver = YES;
+            [self playSound:lostId];
+            self.undoButton.hidden = YES;
+            self.pauseButton.hidden = YES;
+            mainView.text = [[NSString alloc] initWithFormat: @"No more moves possible."];
+            [mainView invalidateText];
+        }
         
 		if(!fClicked)
 			[self playSound:illegalId];
@@ -761,6 +779,57 @@
                 [self playSound:illegalId];
         }
     }
+}
+
+- (BOOL)isMovePossible
+{
+    MainView *mainView = (MainView *)self.view;
+    
+    if ([self.stack count] > 0) {
+        return YES;
+    }
+    
+    for (CardView *firstCard in self.cards) {
+        if (firstCard != (CardView *)[NSNull null] && [self cardTappable:firstCard.positionIndex :nil]) {
+            // Card is tappable, now see if it can be removed
+            if([self faceValue:(firstCard.cardValue)] == 13) {
+                return YES;
+            }
+
+            // Check if two cards can be removed
+            for (CardView *secondCard in self.cards) {
+                if (secondCard != (CardView *)[NSNull null] && secondCard != firstCard && [self cardTappable:secondCard.positionIndex :firstCard]) {
+                    // Both cards are tappable
+                    
+                    if(([self faceValue:(firstCard.cardValue)] + [self faceValue:(secondCard.cardValue)]) == 13) {
+                        return YES;
+                    }
+                }
+            }
+            
+            if (mainView.fTurnOverDeck) {
+                // Check if there is a card in stack down that matches
+                for (CardView *secondCard in self.stackDown) {
+                    if(([self faceValue:(firstCard.cardValue)] + [self faceValue:(secondCard.cardValue)]) == 13) {
+                        return YES;
+                    }
+                }
+            }
+            else {
+                // Check if the top card in stack down matches or is a king
+                CardView *secondCard = [self.stackDown lastObject];
+                if([self faceValue:(firstCard.cardValue)] == 13) {
+                    return YES;
+                }
+                
+                if(([self faceValue:(firstCard.cardValue)] + [self faceValue:(secondCard.cardValue)]) == 13) {
+                    return YES;
+                }
+            }
+        }
+    }
+    
+    return NO;
 }
 
 - (void)updateScore:(CADisplayLink*)sender
@@ -830,7 +899,7 @@
     [self changeCardFrames];
 }
 
-- (BOOL)cardTappable:(unsigned short)cardIndex {
+- (BOOL)cardTappable:(unsigned short)cardIndex :(CardView *)firstCard {
     if([self.cards objectAtIndex:cardIndex] == [NSNull null]) {
         return NO;
     }
@@ -842,8 +911,8 @@
     switch (cardIndex) {
         case 0:
             if(!(([self.cards objectAtIndex:1] == [NSNull null] && [self.cards objectAtIndex:2] == [NSNull null]) ||
-                 (self.firstCard.positionIndex == 1 && [self.cards objectAtIndex:2] == [NSNull null]) ||
-                 ([self.cards objectAtIndex:1] == [NSNull null] && self.firstCard.positionIndex == 2))) {
+                 (firstCard != nil && firstCard.positionIndex == 1 && [self.cards objectAtIndex:2] == [NSNull null]) ||
+                 ([self.cards objectAtIndex:1] == [NSNull null] && firstCard != nil && firstCard.positionIndex == 2))) {
                 return NO;
             }
             break;
@@ -851,8 +920,8 @@
         case 1:
         case 2:
             if(!(([self.cards objectAtIndex:cardIndex + 2] == [NSNull null] && [self.cards objectAtIndex:cardIndex + 3] == [NSNull null]) ||
-                 (self.firstCard.positionIndex == (cardIndex + 2) && [self.cards objectAtIndex:cardIndex + 3] == [NSNull null]) ||
-                 ([self.cards objectAtIndex:cardIndex + 2] == [NSNull null] && self.firstCard.positionIndex == (cardIndex + 3)))) {
+                 (firstCard != nil && firstCard.positionIndex == (cardIndex + 2) && [self.cards objectAtIndex:cardIndex + 3] == [NSNull null]) ||
+                 ([self.cards objectAtIndex:cardIndex + 2] == [NSNull null] && firstCard != nil && firstCard.positionIndex == (cardIndex + 3)))) {
                 return NO;
             }
             break;
@@ -861,8 +930,8 @@
         case 4:
         case 5:
             if(!(([self.cards objectAtIndex:cardIndex + 3] == [NSNull null] && [self.cards objectAtIndex:cardIndex + 4] == [NSNull null]) ||
-                 (self.firstCard.positionIndex == (cardIndex + 3) && [self.cards objectAtIndex:cardIndex + 4] == [NSNull null]) ||
-                 ([self.cards objectAtIndex:cardIndex + 3] == [NSNull null] && self.firstCard.positionIndex == (cardIndex + 4)))) {
+                 (firstCard != nil && firstCard.positionIndex == (cardIndex + 3) && [self.cards objectAtIndex:cardIndex + 4] == [NSNull null]) ||
+                 ([self.cards objectAtIndex:cardIndex + 3] == [NSNull null] && firstCard != nil && firstCard.positionIndex == (cardIndex + 4)))) {
                 return NO;
             }
             break;
@@ -872,8 +941,8 @@
         case 8:
         case 9:
             if(!(([self.cards objectAtIndex:cardIndex + 4] == [NSNull null] && [self.cards objectAtIndex:cardIndex + 5] == [NSNull null]) ||
-                 (self.firstCard.positionIndex == (cardIndex + 4) && [self.cards objectAtIndex:cardIndex + 5] == [NSNull null]) ||
-                 ([self.cards objectAtIndex:cardIndex + 4] == [NSNull null] && self.firstCard.positionIndex == (cardIndex + 5)))) {
+                 (firstCard != nil && firstCard.positionIndex == (cardIndex + 4) && [self.cards objectAtIndex:cardIndex + 5] == [NSNull null]) ||
+                 ([self.cards objectAtIndex:cardIndex + 4] == [NSNull null] && firstCard != nil && firstCard.positionIndex == (cardIndex + 5)))) {
                 return NO;
             }
             break;
@@ -884,8 +953,8 @@
         case 13:
         case 14:
             if(!(([self.cards objectAtIndex:cardIndex + 5] == [NSNull null] && [self.cards objectAtIndex:cardIndex + 6] == [NSNull null]) ||
-                 (self.firstCard.positionIndex == (cardIndex + 5) && [self.cards objectAtIndex:cardIndex + 6] == [NSNull null]) ||
-                 ([self.cards objectAtIndex:cardIndex + 5] == [NSNull null] && self.firstCard.positionIndex == (cardIndex + 6)))) {
+                 (firstCard != nil && firstCard.positionIndex == (cardIndex + 5) && [self.cards objectAtIndex:cardIndex + 6] == [NSNull null]) ||
+                 ([self.cards objectAtIndex:cardIndex + 5] == [NSNull null] && firstCard != nil && firstCard.positionIndex == (cardIndex + 6)))) {
                 return NO;
             }
             break;
@@ -897,8 +966,8 @@
         case 19:
         case 20:
             if(!(([self.cards objectAtIndex:cardIndex + 6] == [NSNull null] && [self.cards objectAtIndex:cardIndex + 7] == [NSNull null]) ||
-                 (self.firstCard.positionIndex == (cardIndex + 6) && [self.cards objectAtIndex:cardIndex + 7] == [NSNull null]) ||
-                 ([self.cards objectAtIndex:cardIndex + 6] == [NSNull null] && self.firstCard.positionIndex == (cardIndex + 7)))) {
+                 (firstCard != nil && firstCard.positionIndex == (cardIndex + 6) && [self.cards objectAtIndex:cardIndex + 7] == [NSNull null]) ||
+                 ([self.cards objectAtIndex:cardIndex + 6] == [NSNull null] && firstCard != nil && firstCard.positionIndex == (cardIndex + 7)))) {
                 return NO;
             }
             break;
