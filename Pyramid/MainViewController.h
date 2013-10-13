@@ -28,9 +28,7 @@
 @property (strong, nonatomic) IBOutlet UIButton *infoButton;
 @property (strong, nonatomic) UIPopoverController *flipsidePopoverController;
 @property (strong, nonatomic) CardView *firstCard;
-@property (strong, nonatomic) CardView *undoCard1;
-@property (strong, nonatomic) CardView *undoCard2;
-@property (strong, nonatomic) CardView *undoCard3;
+@property (strong, nonatomic) NSMutableArray *undoCards;
 @property (assign, nonatomic) long lUndoScore;
 @property (assign, nonatomic) long lUndoCasinoScore;
 @property (strong, nonatomic) CADisplayLink *gameTimer;

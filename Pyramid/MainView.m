@@ -35,16 +35,13 @@
 	// Obtain graphics context and set defaults
 	CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetLineWidth(context, 1.0);
-    UIFont *font;
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        font = [UIFont systemFontOfSize:FONT_SIZE_LINE_IPHONE];
-    } else {
-        font = [UIFont systemFontOfSize:FONT_SIZE_LINE_IPAD];
-    }
+    UIFont *fontSmall = [UIFont systemFontOfSize:FONT_SIZE_LINE_IPHONE];
+    UIFont *fontLarge = [UIFont systemFontOfSize:FONT_SIZE_LINE_IPAD];
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
     paragraphStyle.alignment = NSTextAlignmentCenter;
-    NSDictionary *dictionary = @{NSFontAttributeName: font,  NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [UIColor whiteColor]};
+    NSDictionary *dictionarySmall = @{NSFontAttributeName: fontSmall,  NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [UIColor whiteColor]};
+    NSDictionary *dictionaryLarge = @{NSFontAttributeName: fontLarge,  NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [UIColor whiteColor]};
     
     // Draw the background in green
     CGContextSetFillColorWithColor(context, [UIColor colorWithRed:0.0f green:0.5f blue:0.0f alpha:1.0f].CGColor);
@@ -65,10 +62,10 @@
         CGContextAddRect(context, rectPaint);
         CGContextDrawPath(context, kCGPathStroke);
         if (self.fTurnOverDeck) {
-            rectPaint.origin.y += (rectPaint.size.height - 2 * font.pointSize) / 2;
-            rectPaint.size.height = 2 * font.pointSize;
+            rectPaint.origin.y += (rectPaint.size.height - 2 * fontSmall.pointSize) / 2;
+            rectPaint.size.height = 2 * fontSmall.pointSize;
             NSString *tap = [NSString stringWithFormat:@"Tap"];
-            [tap drawInRect:rectPaint withAttributes:dictionary];
+            [tap drawInRect:rectPaint withAttributes:dictionarySmall];
             [[UIColor blackColor] set];
         }
     }
@@ -101,7 +98,7 @@
     rectPaint = [self lineFrame:0];
     if (CGRectIntersectsRect(rectPaint, rect)) {
         NSString *score = [NSString stringWithFormat:@"Score:"];
-        [score drawInRect:rectPaint withAttributes:dictionary];
+        [score drawInRect:rectPaint withAttributes:dictionarySmall];
     }
     
     rectPaint = [self lineFrame:1];
@@ -112,14 +109,14 @@
         } else {
             score = [NSString stringWithFormat:@"%ld", self.lScore];
         }
-        [score drawInRect:rectPaint withAttributes:dictionary];
+        [score drawInRect:rectPaint withAttributes:dictionarySmall];
     }
     
     if (self.fTimer) {
         rectPaint = [self lineFrame:2];
         if (CGRectIntersectsRect(rectPaint, rect)) {
             NSString *score = [NSString stringWithFormat:@"Time:"];
-            [score drawInRect:rectPaint withAttributes:dictionary];
+            [score drawInRect:rectPaint withAttributes:dictionarySmall];
         }
         
         rectPaint = [self lineFrame:3];
@@ -132,7 +129,7 @@
                 unsigned long ulHours = ulMinutes / 60;
                 score = [NSString stringWithFormat:@"%lu:%02lu:%02lu", ulHours, ulMinutes - (ulHours * 60), self.ulTime - (ulMinutes * 60) - (ulHours * 3600)];
             }
-            [score drawInRect:rectPaint withAttributes:dictionary];
+            [score drawInRect:rectPaint withAttributes:dictionarySmall];
         }
     }
     
@@ -141,7 +138,11 @@
         rectPaint = [self textFrame];
         if (CGRectIntersectsRect(rectPaint, rect)) {
             [[UIColor whiteColor] set];
-            [self.text drawInRect:rectPaint withAttributes:dictionary];
+            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+                [self.text drawInRect:rectPaint withAttributes:dictionarySmall];
+            } else {
+                [self.text drawInRect:rectPaint withAttributes:dictionaryLarge];
+            }
         }
     }
 }
@@ -228,12 +229,8 @@
 {
     CGSize cardSize = [self cardSize];
     CGPoint offsetPoint = [self offsetPoint];
-    UIFont *font;
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        font = [UIFont systemFontOfSize:FONT_SIZE_LINE_IPHONE];
-    } else {
-        font = [UIFont systemFontOfSize:FONT_SIZE_LINE_IPAD];
-    }
+    // This always uses the smaller font
+    UIFont *font = [UIFont systemFontOfSize:FONT_SIZE_LINE_IPHONE];
     CGRect rectLineIndex[4] = {
         {offsetPoint.x, offsetPoint.y + cardSize.height, cardSize.width, 2 * font.pointSize},
         {offsetPoint.x, offsetPoint.y + cardSize.height + font.pointSize, cardSize.width, 2 * font.pointSize},

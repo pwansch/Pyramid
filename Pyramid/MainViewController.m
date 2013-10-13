@@ -76,6 +76,7 @@
     self.stackDown = [[NSMutableArray alloc] initWithCapacity:NOCARDS];
     self.down = [[NSMutableArray alloc] initWithCapacity:NOCARDS];
     self.cards = [[NSMutableArray alloc] initWithCapacity:NOINDEXES];
+    self.undoCards = [[NSMutableArray alloc] initWithCapacity:NOCARDS];
 
     // Start timer
     self.lastTime = 0.0;
@@ -291,9 +292,7 @@
     self.fUndo = NO;
     self.lUndoScore = 0;
     self.lUndoCasinoScore = 0;
-    self.undoCard1 = nil;
-    self.undoCard2 = nil;
-    self.undoCard3 = nil;
+    [self.undoCards removeAllObjects];
     self.undoButton.hidden = (self.m_started ? NO : YES);
     [self.pauseButton setTitle:@"Pause" forState:UIControlStateNormal];
     if (mainView.fTimer && self.m_started) {
@@ -397,19 +396,8 @@
 {
     if(!self.fGameOver && self.m_started && self.fUndo) {
         // Create collection of undo cards
-        NSMutableArray *undoCards = [[NSMutableArray alloc] initWithCapacity:2];
-        if (self.undoCard1 != nil) {
-            [undoCards addObject:self.undoCard1];
-        }
-        if (self.undoCard2 != nil) {
-            [undoCards addObject:self.undoCard2];
-        }
-        if (self.undoCard3 != nil) {
-            [undoCards addObject:self.undoCard3];
-        }
-
         MainView *mainView = (MainView *)self.view;
-        for (CardView *card in undoCards) {
+        for (CardView *card in self.undoCards) {
             [mainView bringSubviewToFront:card];
             switch (card.position) {
                 case Cards:
@@ -465,9 +453,7 @@
         self.fUndo = NO;
         self.lUndoScore = 0;
         self.lUndoCasinoScore = 0;
-        self.undoCard1 = nil;
-        self.undoCard2 = nil;
-        self.undoCard3 = nil;
+        [self.undoCards removeAllObjects];
         
         // Play the undo game sound
         [self playSound:undoId];
@@ -533,9 +519,8 @@
                 [mainView invalidateLine:1];
                 
                 // Save undo information
-                self.undoCard1 = tappedCard;
-                self.undoCard2 = nil;
-                self.undoCard3 = nil;
+                [self.undoCards removeAllObjects];
+                [self.undoCards addObject:tappedCard];
                 self.fUndo = YES;
 			}
 			else
@@ -589,8 +574,9 @@
                 [mainView invalidateLine:1];
                 
                 // Save undo information
-                self.undoCard1 = tappedCard;
-                    
+                [self.undoCards removeAllObjects];
+                [self.undoCards addObject:tappedCard];
+                
 				// karte entfernen
                 if(self.firstCard.position == StackDown) {
                     [self.stackDown removeObject:self.firstCard];
@@ -615,8 +601,7 @@
                 [self.down addObject:self.firstCard];
                 
                 // Save undo information
-                self.undoCard2 = self.firstCard;
-                self.undoCard3 = nil;
+                [self.undoCards addObject:self.firstCard];
                 self.fUndo = YES;
                 self.firstCard = nil;
             }
@@ -636,9 +621,7 @@
             // es sind noch Karten am Stapel
             self.lUndoScore = 0;
             self.lUndoCasinoScore = 0;
-            self.undoCard1 = nil;
-            self.undoCard2 = nil;
-            self.undoCard3 = nil;
+            [self.undoCards removeAllObjects];
             short sCount;
 			if(self.fOne)
 				sCount = 1;
@@ -685,17 +668,7 @@
                 }
                 
                 // Save undo information
-                switch (k) {
-                    case 0:
-                        self.undoCard3 = card;
-                        break;
-                    case 1:
-                        self.undoCard2 = card;
-                        break;
-                    case 2:
-                        self.undoCard1 = card;
-                        break;
-                }
+                [self.undoCards insertObject:card atIndex:0];
                 self.fUndo = YES;
 			}
         }
@@ -742,10 +715,16 @@
             {
                 // es sind keine Karten mehr am Stapel
                 // letzte Karte suchen
+                self.lUndoScore = 0;
+                self.lUndoCasinoScore = 0;
+                [self.undoCards removeAllObjects];
                 [self playSound:shuffleId];
                 int cardNumber = 0;
                 NSEnumerator *enumerator = [self.stackDown reverseObjectEnumerator];
                 for (CardView *card in enumerator) {
+                    card.previousPosition = card.position;
+                    card.previousPositionIndex = card.positionIndex;
+                    card.previousFaceDown = card.faceDown;
                     if (self.fAnimation) {
                         [UIView transitionWithView:card
                                           duration:(0.5 + (cardNumber * 0.1))
@@ -762,18 +741,17 @@
                     [self.stack addObject:card];
                     [self.stackDown removeObject:card];
                     mainView.lScore -= 5;
-                    if(mainView.fTimer)
+                    self.lUndoScore -=5;
+                    if(mainView.fTimer) {
                         mainView.lCasinoScore -= 5;
+                        self.lUndoCasinoScore -= 5;
+                    }
                     [mainView invalidateLine:1];
+                    [self.undoCards insertObject:card atIndex:0];
                 }
 
                 // Undo is not enabled by default
-                self.fUndo = NO;
-                self.lUndoScore = 0;
-                self.lUndoCasinoScore = 0;
-                self.undoCard1 = nil;
-                self.undoCard2 = nil;
-                self.undoCard3 = nil;
+                self.fUndo = YES;
             }
             else
                 [self playSound:illegalId];
@@ -785,7 +763,14 @@
 {
     MainView *mainView = (MainView *)self.view;
     
+    // If there a cards on the stack, a move is possible
     if ([self.stack count] > 0) {
+        return YES;
+    }
+    
+    // If there is a king on the down stack, a move is possible
+    CardView *card = [self.stackDown lastObject];
+    if([self faceValue:(card.cardValue)] == 13) {
         return YES;
     }
     
@@ -800,13 +785,13 @@
             for (CardView *secondCard in self.cards) {
                 if (secondCard != (CardView *)[NSNull null] && secondCard != firstCard && [self cardTappable:secondCard.positionIndex :firstCard]) {
                     // Both cards are tappable
-                    
                     if(([self faceValue:(firstCard.cardValue)] + [self faceValue:(secondCard.cardValue)]) == 13) {
                         return YES;
                     }
                 }
             }
             
+            // Check the stack down because the stack is empty
             if (mainView.fTurnOverDeck) {
                 // Check if there is a card in stack down that matches
                 for (CardView *secondCard in self.stackDown) {
@@ -816,12 +801,8 @@
                 }
             }
             else {
-                // Check if the top card in stack down matches or is a king
+                // Check if the top card in stack down matches
                 CardView *secondCard = [self.stackDown lastObject];
-                if([self faceValue:(firstCard.cardValue)] == 13) {
-                    return YES;
-                }
-                
                 if(([self faceValue:(firstCard.cardValue)] + [self faceValue:(secondCard.cardValue)]) == 13) {
                     return YES;
                 }
