@@ -35,7 +35,12 @@
 	// Obtain graphics context and set defaults
 	CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetLineWidth(context, 1.0);
-    UIFont *font = [UIFont systemFontOfSize:FONT_SIZE_LINE];
+    UIFont *font;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        font = [UIFont systemFontOfSize:FONT_SIZE_LINE_IPHONE];
+    } else {
+        font = [UIFont systemFontOfSize:FONT_SIZE_LINE_IPAD];
+    }
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
     paragraphStyle.alignment = NSTextAlignmentCenter;
@@ -223,7 +228,12 @@
 {
     CGSize cardSize = [self cardSize];
     CGPoint offsetPoint = [self offsetPoint];
-    UIFont *font = [UIFont systemFontOfSize:FONT_SIZE_LINE];
+    UIFont *font;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        font = [UIFont systemFontOfSize:FONT_SIZE_LINE_IPHONE];
+    } else {
+        font = [UIFont systemFontOfSize:FONT_SIZE_LINE_IPAD];
+    }
     CGRect rectLineIndex[4] = {
         {offsetPoint.x, offsetPoint.y + cardSize.height, cardSize.width, 2 * font.pointSize},
         {offsetPoint.x, offsetPoint.y + cardSize.height + font.pointSize, cardSize.width, 2 * font.pointSize},
@@ -240,7 +250,12 @@
 {
     CGPoint offsetPoint = [self offsetPoint];
     CGRect statusBarFrame = [self statusBarFrameViewRect];
-    UIFont *font = [UIFont systemFontOfSize:FONT_SIZE_LINE];
+    UIFont *font;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        font = [UIFont systemFontOfSize:FONT_SIZE_LINE_IPHONE];
+    } else {
+        font = [UIFont systemFontOfSize:FONT_SIZE_LINE_IPAD];
+    }
     return CGRectMake(0, statusBarFrame.size.height + (offsetPoint.y - statusBarFrame.size.height - font.pointSize * 2) / 2, self.bounds.size.width, font.pointSize * 2);
 }
 

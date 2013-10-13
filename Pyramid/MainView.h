@@ -8,13 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-#define NOCARDS         52
-#define NOINDEXES       28
-#define CXCARD_IPHONE   54
-#define CYCARD_IPHONE   72
-#define CXCARD_IPAD     71
-#define CYCARD_IPAD     96
-#define FONT_SIZE_LINE  14
+#define NOCARDS                 52
+#define NOINDEXES               28
+#define CXCARD_IPHONE           54
+#define CYCARD_IPHONE           72
+#define CXCARD_IPAD             71
+#define CYCARD_IPAD             96
+#define FONT_SIZE_LINE_IPHONE   14
+#define FONT_SIZE_LINE_IPAD     28
 
 @interface MainView : UIView
 
