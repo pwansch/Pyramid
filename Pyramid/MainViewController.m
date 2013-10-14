@@ -665,11 +665,11 @@
                         self.lUndoCasinoScore--;
                     }
                     [mainView invalidateLine:1];
-                }
                 
-                // Save undo information
-                [self.undoCards insertObject:card atIndex:0];
-                self.fUndo = YES;
+                    // Save undo information
+                    [self.undoCards insertObject:card atIndex:0];
+                    self.fUndo = YES;
+                }
 			}
         }
         
