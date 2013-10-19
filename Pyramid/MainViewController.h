@@ -55,7 +55,7 @@
 @property (assign, nonatomic) BOOL fOne;
 @property (assign, nonatomic) short sCardBack;
 @property (assign, nonatomic) BOOL fGameOver;
-@property (assign, atomic) BOOL fUndo;
+@property (assign, nonatomic) BOOL fUndo;
 
 - (IBAction)newGame:(id)sender;
 - (IBAction)pauseGame:(id)sender;

@@ -682,11 +682,8 @@
             self.pauseButton.hidden = YES;
             mainView.text = [[NSString alloc] initWithFormat: @"You win."];
             [mainView invalidateText];
-		}
-
-        // Check if moves are possible
-        if (![self isMovePossible]) {
-			// Spiel verloren
+		} else if (![self isMovePossible]) {
+            // Check if moves are possible
             if (self.firstCard != nil && self.firstCard.tapped) {
                 [self.firstCard tapCard];
             }
@@ -793,10 +790,25 @@
             
             // Check the stack down because the stack is empty
             if (mainView.fTurnOverDeck) {
-                // Check if there is a card in stack down that matches
-                for (CardView *secondCard in self.stackDown) {
-                    if(([self faceValue:(firstCard.cardValue)] + [self faceValue:(secondCard.cardValue)]) == 13) {
-                        return YES;
+                if (self.fOne) {
+                    // Check if there is a card in stack down that matches
+                    for (CardView *secondCard in self.stackDown) {
+                        if(([self faceValue:(firstCard.cardValue)] + [self faceValue:(secondCard.cardValue)]) == 13) {
+                            return YES;
+                        }
+                    }
+                } else {
+                    // Figure out which cards would show
+                    NSUInteger stackDownCount = [self.stackDown count];
+                    NSUInteger currentCard = 0;
+                    NSUInteger lastCard = stackDownCount - 1;
+                    for (CardView *secondCard in self.stackDown) {
+                        if (currentCard % 3 == 2 || currentCard == lastCard) {
+                            if(([self faceValue:(firstCard.cardValue)] + [self faceValue:(secondCard.cardValue)]) == 13) {
+                                return YES;
+                            }
+                        }
+                        currentCard++;
                     }
                 }
             }
@@ -809,7 +821,6 @@
             }
         }
     }
-    
     return NO;
 }
 
