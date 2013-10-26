@@ -510,9 +510,9 @@
 			children = (
 				AFE8C70F17ED2B8800A1BF04 /* AppDelegate.h */,
 				AFE8C71017ED2B8800A1BF04 /* AppDelegate.m */,
-				AFE8C71217ED2B8800A1BF04 /* Main_iPhone.storyboard */,
 				AFC2E3CB17EE5DBD00BBAEA1 /* CardView.h */,
 				AFC2E3CC17EE5DBD00BBAEA1 /* CardView.m */,
+				AFE8C71217ED2B8800A1BF04 /* Main_iPhone.storyboard */,
 				AFE8C71517ED2B8800A1BF04 /* Main_iPad.storyboard */,
 				AFE8C71817ED2B8800A1BF04 /* MainViewController.h */,
 				AFE8C71917ED2B8800A1BF04 /* MainViewController.m */,
